@@ -1,28 +1,41 @@
 ﻿@model List<Category>
 
-<h1>Список категорій</h1>
-<table class="table table-bordered table-striped">
-	<thead>
+<div class="container">
+	<div class="row pt-4 pb-3">
+		<div class="col-6">
+			<h1 class="text-primary">
+				Список Категорій
+			</h1>
+		</div>
+		<div class="col-6 text-end">
+			<a asp-controller="" asp-action="" class="btn btn-primary fs-4">
+				<i class="bi bi-plus-square-fill"></i> Створити Нову Категорію
+			</a>
+		</div>
+	</div>
+<table class="table table-bordered border-primary table-striped table-light ">
+	<thead class="border-2">
 		<tr>
-			<th>
+			<th class="p-3 fs-5">
 				Назва Категорії
 			</th>
-			<th>
+			<th class="p-3 fs-5">
 				Порядок Відображення
 			</th>
 		</tr>
 	</thead>
-	<tbody>
+	<tbody class="border-2">
 			@foreach (var obj in Model.OrderBy(u=>u.DisplayOrder))
 			{
 			<tr>
-				<td>
+				<td class="ps-3">
 						@obj.Name
 				</td>
-				<td>
+				<td class="ps-3">
 						@obj.DisplayOrder
 				</td>
 			</tr>
 			}
 	</tbody>
 </table>
+</div>
