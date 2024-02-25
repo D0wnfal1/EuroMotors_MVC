@@ -1,4 +1,4 @@
-using EuroMotorsWeb.Models;
+using EuroMotors.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 

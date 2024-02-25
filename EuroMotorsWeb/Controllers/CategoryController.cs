@@ -1,12 +1,12 @@
-﻿using EuroMotorsWeb.Data;
-using EuroMotorsWeb.Models;
+﻿using EuroMotors.DataAccess.Data;
+using EuroMotors.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 
 namespace EuroMotorsWeb.Controllers
 {
-	public class CategoryController : Controller
+    public class CategoryController : Controller
 	{
 		private readonly ApplicationDbContext _db;
         public CategoryController(ApplicationDbContext db)
