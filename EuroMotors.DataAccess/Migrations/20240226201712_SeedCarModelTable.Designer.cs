@@ -4,6 +4,7 @@ using EuroMotors.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EuroMotors.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240226201712_SeedCarModelTable")]
+    partial class SeedCarModelTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,10 +38,6 @@ namespace EuroMotors.DataAccess.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
-                    b.Property<int?>("DisplayOrder")
-                        .IsRequired()
-                        .HasColumnType("int");
-
                     b.Property<string>("Model")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -57,7 +56,6 @@ namespace EuroMotors.DataAccess.Migrations
                         {
                             Id = 1,
                             Brand = "Toyota",
-                            DisplayOrder = 1,
                             Model = "Carolla",
                             Year = 2018
                         },
@@ -65,7 +63,6 @@ namespace EuroMotors.DataAccess.Migrations
                         {
                             Id = 2,
                             Brand = "Honda",
-                            DisplayOrder = 2,
                             Model = "Civic",
                             Year = 2020
                         },
@@ -73,7 +70,6 @@ namespace EuroMotors.DataAccess.Migrations
                         {
                             Id = 3,
                             Brand = "Chevrolet",
-                            DisplayOrder = 3,
                             Model = "Camaro",
                             Year = 2015
                         });

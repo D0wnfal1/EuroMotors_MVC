@@ -1,0 +1,62 @@
+﻿@model List<CarModel>
+<div class="container">
+	<div class="row pt-4 pb-3">
+		<div class="col-6">
+			<h1 class="text-primary">
+				Список Моделей Авто
+			</h1>
+		</div>
+		<div class="col-6 text-end">
+			<a asp-controller="CarModel" asp-action="Create" class="btn btn-primary fs-4">
+				<i class="bi bi-plus-square-fill"></i> Створити Нову Категорію
+			</a>
+		</div>
+	</div>
+	<table class="table table-bordered border-primary table-striped table-light ">
+		<thead class="border-2">
+			<tr>
+				<th class="p-3 fs-5">
+					Назва Бренду
+				</th>
+				<th class="p-3 fs-5">
+					Назва Марки
+				</th>
+				<th class="p-3 fs-5">
+					Рік Випуску
+				</th>
+				</th>
+				<th class="p-3 fs-5">
+					Порядок Відображення
+				</th>
+			</tr>
+		</thead>
+		<tbody class="border-2">
+			@foreach (var obj in Model.OrderBy(u => u.DisplayOrder))
+			{
+				<tr>
+					<td class="ps-3">
+						@obj.Brand
+					</td>
+					<td class="ps-3">
+						@obj.Model
+					</td>
+					<td class="ps-3">
+						@obj.Year
+					</td><td class="ps-3">
+						@obj.DisplayOrder
+					</td>
+					<td>
+						<div class="w-75 btn-group" role="group">
+							<a asp-controller="CarModel" asp-action="Edit" asp-route-id="@obj.Id" class="btn btn-primary mx-2">
+								<i class="bi bi-pencil-square"></i> Edit
+							</a>
+							<a asp-controller="CarModel" asp-action="Delete" asp-route-id="@obj.Id" class="btn btn-danger mx-2">
+								<i class="bi bi-trash3-fill"></i> Delete
+							</a>
+						</div>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
