@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EuroMotors.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace EuroMotors.DataAccess.Repository.IRepository
 {
-	public interface IUnitOfWork
+	public interface ICarModelRepository : IRepository<CarModel>
 	{
-		ICategoryRepository Category { get; }
-		ICarModelRepository CarModel { get; }
-		public void Save();
+		void Update(CarModel obj);
 	}
 }

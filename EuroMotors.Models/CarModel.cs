@@ -22,6 +22,7 @@ namespace EuroMotors.Models
 		public string Model { get; set; }
 		[Required(ErrorMessage = "Рік Випуску обов'язковий!")]
 		[DisplayName("Рік Випуску")]
+		[Range(1985, 2024, ErrorMessage = "Значення повинно бути від 1985 до 2024!")]
 		public int? Year { get; set; }
 		[Required(ErrorMessage = "Порядок відображення обов'язковий!")]
 		[DisplayName("Порядок Відображення")]

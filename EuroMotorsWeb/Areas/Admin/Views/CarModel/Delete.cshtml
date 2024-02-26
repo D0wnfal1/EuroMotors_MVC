@@ -1,0 +1,37 @@
+﻿@model CarModel
+
+<form method="post">
+	<input asp-for="Id" hidden />
+	<div class="border border-primary p-3 mt-4">
+		<div class="row pb-2">
+			<h2 class="text-primary">Видалити категорію</h2>
+			<hr />
+		</div>
+		<div class="mb-3 p-1">
+			<label asp-for="Brand" class="p-0"></label>
+			<input asp-for="Brand" disabled class="form-control border-primary" />
+		</div>
+		<div class="mb-3 p-1">
+			<label asp-for="Model" class="p-0"></label>
+			<input asp-for="Model" disabled class="form-control border-primary" />
+		</div>
+		<div class="mb-3 p-1">
+			<label asp-for="Year" class="p-0"></label>
+			<input asp-for="Year" disabled class="form-control border-primary" />
+		</div>
+		<div class="mb-3 p-1">
+			<label asp-for="DisplayOrder" class=" p-0"></label>
+			<input asp-for="DisplayOrder" disabled class="form-control border-primary" />
+		</div>
+		<div class="row">
+			<div class="col-6 col-md-3">
+				<button type="submit" class="btn btn-danger form-control">Видалити</button>
+			</div>
+			<div class="col-6 col-md-3">
+				<a asp-controller="Category" asp-action="Index" class="btn btn-outline-secondary form-control">
+					Назад до Списку Моделей
+				</a>
+			</div>
+		</div>
+	</div>
+</form>
