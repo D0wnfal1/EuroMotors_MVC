@@ -10,7 +10,7 @@ namespace EuroMotors.DataAccess.Repository.IRepository
 	{
 		ICategoryRepository Category { get; }
 		ICarModelRepository CarModel { get; }
-		ICarModelRepository Product { get; }
+		IProductRepository Product { get; }
 		public void Save();
 	}
 }
