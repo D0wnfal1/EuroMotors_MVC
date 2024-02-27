@@ -10,18 +10,18 @@ using System.Threading.Tasks;
 
 namespace EuroMotors.DataAccess.Repository
 {
-	public class CarModelRepository : Repository<CarModel>, ICarModelRepository
+	public class ProductRepository : Repository<Product>, IProductRepository
 	{
 
 		private readonly ApplicationDbContext _db;
-        public CarModelRepository(ApplicationDbContext db) : base(db)
+        public ProductRepository(ApplicationDbContext db) : base(db)
         {
             _db = db;
         }
 
-		public void Update(CarModel obj)
+		public void Update(Product obj)
 		{
-			_db.CarModels.Update(obj);
+			_db.Products.Update(obj);
 		}
 	}
 }
