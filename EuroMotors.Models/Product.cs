@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace EuroMotors.Models
 {
@@ -32,13 +33,18 @@ namespace EuroMotors.Models
 		[Required(ErrorMessage = "Ви не ввели Ціну!")]
 		[DisplayName ("Ціна")]
 		public double Price { get; set; }
+		[Required(ErrorMessage = "Виберіть категорію товару")]
+		[Display(Name = "Категорія")]
 		public int CategoryId { get; set; }
 		[ForeignKey("CategoryId")]
+		[ValidateNever]
 		public Category Category { get; set; }
 
 		public int? CarModelId { get; set; }
 		[ForeignKey("CarModelId")]
+		[ValidateNever]
 		public CarModel CarModel { get; set; }
-        public string ImageUrl { get; set; }
+		[ValidateNever]
+		public string ImageUrl { get; set; }
     }
 }

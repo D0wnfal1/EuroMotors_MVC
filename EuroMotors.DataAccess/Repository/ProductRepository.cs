@@ -21,7 +21,22 @@ namespace EuroMotors.DataAccess.Repository
 
 		public void Update(Product obj)
 		{
-			_db.Products.Update(obj);
+			var objFromDb = _db.Products.FirstOrDefault(u=>u.Id==obj.Id);
+		    if (objFromDb != null)
+			{
+				objFromDb.Title = obj.Title;
+				objFromDb.Desctiption = obj.Desctiption;
+				objFromDb.VendorCode = obj.VendorCode;
+				objFromDb.Brand = obj.Brand;
+				objFromDb.ListPrice = obj.ListPrice;
+				objFromDb.Price = obj.Price;
+				objFromDb.Category = obj.Category;
+				objFromDb.CarModel = obj.CarModel;
+				if (obj.ImageUrl != null)
+				{
+					objFromDb.ImageUrl = obj.ImageUrl;
+				}
+			}
 		}
 	}
 }

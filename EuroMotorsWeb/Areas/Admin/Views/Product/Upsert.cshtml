@@ -1,0 +1,94 @@
+﻿@model ProductVM
+
+<form method="post" class="" enctype="multipart/form-data">
+	<input asp-for="Product.Id" hidden />
+	<input asp-for="Product.ImageUrl" hidden />
+	<div class="row">
+		<div class="col-10">
+			<div class="border border-primary p-3 mt-4">
+				<div class="row pb-2">
+					<h2 class="text-primary">@(Model.Product.Id != 0 ? "Редагувати" : "Створити") Новий Товар</h2>
+					<hr />
+				</div>
+				<div class="mb-3 p-1">
+					<label asp-for="Product.Title" class="p-0"></label>
+					<input asp-for="Product.Title" class="form-control border-primary" />
+					<span asp-validation-for="Product.Title" class="text-danger"></span>
+				</div>
+				<div class="mb-3 p-1 ">
+					<label asp-for="Product.Desctiption" class=" p-0"></label>
+					<textarea asp-for="Product.Desctiption" class="form-control border-primary"></textarea>
+				</div>
+				<div class="mb-3 p-1">
+					<label asp-for="Product.VendorCode" class=" p-0"></label>
+					<input asp-for="Product.VendorCode" class="form-control border-primary" />
+					<span asp-validation-for="Product.VendorCode" class="text-danger"></span>
+				</div>
+				<div class="mb-3 p-1">
+					<label asp-for="Product.Brand" class=" p-0"></label>
+					<input asp-for="Product.Brand" class="form-control border-primary" />
+					<span asp-validation-for="Product.Brand" class="text-danger"></span>
+				</div>
+				<div class="mb-3 p-1">
+					<label asp-for="Product.ListPrice" class=" p-0"></label>
+					<input asp-for="Product.ListPrice" type="number" class="form-control border-primary" />
+					<span asp-validation-for="Product.ListPrice" class="text-danger"></span>
+				</div>
+				<div class="mb-3 p-1">
+					<label asp-for="Product.Price" class=" p-0"></label>
+					<input asp-for="Product.Price" type="number" class="form-control border-primary" />
+					<span asp-validation-for="Product.Price" class="text-danger"></span>
+				</div>
+				<div class="mb-3 p-1">
+					<select asp-for="@Model.Product.CategoryId" asp-items="@Model.CategoryList" class="form-select p-0 border-primary p-2">
+						<option disabled selected>--Оберіть Категорію</option>
+					</select>
+					<span asp-validation-for="Product.CategoryId" class="text-danger"></span>
+				</div>
+				<div class="mb-3 p-1">
+					<select asp-for="@Model.Product.CarModelId" asp-items="@Model.CarModelList" class="form-select p-0 border-primary p-2">
+						<option value="" selected>--Оберіть Модель Авто (необов'язково)</option>
+					</select>
+					<span asp-validation-for="Product.CarModelId" class="text-danger"></span>
+				</div>
+				<div class="mb-3 p-1">
+					<input type="file" name="file" class=" p-0"></input>
+				</div>
+				<div class="row">
+					<div class="col-6 col-md-3">
+						@if (Model.Product.Id != 0)
+						{
+							<button type="submit" class="btn btn-primary form-control">Редагувати</button>
+						}
+						else
+						{
+							<button type="submit" class="btn btn-primary form-control">Створити</button>
+						}
+					</div>
+					<div class="col-6 col-md-3">
+						<a asp-controller="Product" asp-action="Index" class="btn btn-outline-secondary form-control">
+							Назад до Списку Товарів
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-2">
+			<img src="@Model.Product.ImageUrl" width="200%" style="border-radius:5px; border:1px solid #fff"
+		</div>
+	</div>
+
+</form>
+@section Scripts
+{
+	<script>
+		tinymce.init({
+			selector: 'textarea',
+			plugins: 'anchor autolink charmap codesample emoticons lists  table visualblocks wordcount ',
+			toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent',
+		});
+	</script>
+	@{
+		<partial name="_ValidationScriptsPartial" />
+	}
+}
