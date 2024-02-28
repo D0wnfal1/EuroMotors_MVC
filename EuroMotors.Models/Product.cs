@@ -14,7 +14,6 @@ namespace EuroMotors.Models
 		public int Id { get; set; }
 		[Required(ErrorMessage = "Ви не ввели Назву Товару!")]
 		[DisplayName("Назва Товару")]
-		[MaxLength(30)]
 		public string Title { get; set; }
 		[Required(ErrorMessage = "Ви не ввели Опис Товару!")]
 		[DisplayName("Опис Товару")]

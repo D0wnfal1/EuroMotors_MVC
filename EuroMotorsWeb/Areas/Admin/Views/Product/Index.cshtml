@@ -18,10 +18,8 @@
 				<th class="p-3 fs-5">
 					Назва Товару
 				</th>
+
 				<th class="p-3 fs-5">
-					Опис Товару
-				</th>
-				<th class ="p-3 fs-5">
 					Артикул
 				</th>
 				<th class="p-3 fs-5">
@@ -33,17 +31,20 @@
 				<th class="p-3 fs-5">
 					Ціна
 				</th>
+				<th class="p-3 fs-5">
+					Категорія
+				</th>
+				<th class="p-3 fs-5">
+					Модель Авто
+				</th>
 			</tr>
 		</thead>
 		<tbody class="border-2">
-			@foreach (var obj in Model.OrderBy(u => u.Id))
+			@foreach (var obj in Model)
 			{
 				<tr>
 					<td class="ps-3">
 						@obj.Title
-					</td>
-					<td class="ps-3">
-						@obj.Desctiption
 					</td>
 					<td class="ps-3">
 						@obj.VendorCode
@@ -57,8 +58,12 @@
 					<td class="ps-3">
 						@obj.Price
 					</td>
+					<td class="ps-3">
+					</td>
+					<td class="ps-3">
+					</td>
 					<td>
-						<div class="w-75 btn-group" role="group">
+						<div class="w-30 btn-group" role="group">
 							<a asp-controller="Product" asp-action="Edit" asp-route-id="@obj.Id" class="btn btn-primary mx-2">
 								<i class="bi bi-pencil-square"></i> Змінити
 							</a>
