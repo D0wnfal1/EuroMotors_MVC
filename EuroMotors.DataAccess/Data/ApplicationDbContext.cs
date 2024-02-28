@@ -40,7 +40,9 @@ namespace EuroMotors.DataAccess.Data
 					VendorCode = "04D11S3AB9",
 					Brand = "Bosch",
 					ListPrice = 148,
-					Price = 140
+					Price = 140,
+					CategoryId = 1,
+					CarModelId = 1
 				},
 				new Product
 				{
@@ -52,7 +54,9 @@ namespace EuroMotors.DataAccess.Data
 					VendorCode = "C2W001ABE",
 					Brand = "ABE",
 					ListPrice = 614,
-					Price = 600
+					Price = 600,
+					CategoryId = 2,
+					CarModelId = 2
 				},
 				new Product
 				{
@@ -65,7 +69,9 @@ namespace EuroMotors.DataAccess.Data
 					VendorCode = "0092S50080",
 					Brand = "Bosch",
 					ListPrice = 4147,
-					Price = 4147
+					Price = 4147,
+					CategoryId = 3,
+					CarModelId = 3
 				}
 				);
 		}

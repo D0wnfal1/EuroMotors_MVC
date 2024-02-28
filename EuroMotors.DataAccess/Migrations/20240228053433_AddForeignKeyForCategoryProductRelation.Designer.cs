@@ -4,6 +4,7 @@ using EuroMotors.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EuroMotors.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240228053433_AddForeignKeyForCategoryProductRelation")]
+    partial class AddForeignKeyForCategoryProductRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -134,9 +137,6 @@ namespace EuroMotors.DataAccess.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
-                    b.Property<int>("CarModelId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
@@ -160,8 +160,6 @@ namespace EuroMotors.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CarModelId");
-
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
@@ -171,7 +169,6 @@ namespace EuroMotors.DataAccess.Migrations
                         {
                             Id = 1,
                             Brand = "Bosch",
-                            CarModelId = 1,
                             CategoryId = 1,
                             Desctiption = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.Lorem.",
                             ListPrice = 148.0,
@@ -183,7 +180,6 @@ namespace EuroMotors.DataAccess.Migrations
                         {
                             Id = 2,
                             Brand = "ABE",
-                            CarModelId = 2,
                             CategoryId = 2,
                             Desctiption = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
                             ListPrice = 614.0,
@@ -195,8 +191,7 @@ namespace EuroMotors.DataAccess.Migrations
                         {
                             Id = 3,
                             Brand = "Bosch",
-                            CarModelId = 3,
-                            CategoryId = 3,
+                            CategoryId = 2,
                             Desctiption = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
                             ListPrice = 4147.0,
                             Price = 4147.0,
@@ -207,19 +202,11 @@ namespace EuroMotors.DataAccess.Migrations
 
             modelBuilder.Entity("EuroMotors.Models.Product", b =>
                 {
-                    b.HasOne("EuroMotors.Models.CarModel", "CarModel")
-                        .WithMany()
-                        .HasForeignKey("CarModelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("EuroMotors.Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("CarModel");
 
                     b.Navigation("Category");
                 });
