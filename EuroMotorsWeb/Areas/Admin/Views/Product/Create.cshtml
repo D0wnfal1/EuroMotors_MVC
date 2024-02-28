@@ -36,6 +36,18 @@
 			<input asp-for="Price" type="number" class="form-control border-primary" />
 			<span asp-validation-for="Price"  class="text-danger"></span>
 		</div>
+		<div class="mb-3 p-1">
+			<select asp-for="CategoryId" asp-items="ViewBag.CategoryList" class="form-select p-0 border-primary p-2">
+				<option disabled selected>--Оберіть Категорію</option>
+			</select>
+			<span asp-validation-for="CategoryId" class="text-danger"></span>
+		</div>
+		<div class="mb-3 p-1">
+			<select asp-for="CarModelId" asp-items="ViewBag.CarModelList" class="form-select p-0 border-primary p-2">
+				<option selected>--Оберіть Модель Авто (необов'язково)</option>
+			</select>
+			<span asp-validation-for="CarModelId" class="text-danger"></span>
+		</div>
 		<div class="row">
 			<div class="col-6 col-md-3">
 				<button type="submit" class="btn btn-primary form-control">Створити</button>

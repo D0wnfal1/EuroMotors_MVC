@@ -36,8 +36,9 @@ namespace EuroMotors.Models
 		[ForeignKey("CategoryId")]
 		public Category Category { get; set; }
 
-		public int CarModelId { get; set; }
+		public int? CarModelId { get; set; }
 		[ForeignKey("CarModelId")]
 		public CarModel CarModel { get; set; }
-	}
+        public string ImageUrl { get; set; }
+    }
 }

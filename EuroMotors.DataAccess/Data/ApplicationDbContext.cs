@@ -42,7 +42,8 @@ namespace EuroMotors.DataAccess.Data
 					ListPrice = 148,
 					Price = 140,
 					CategoryId = 1,
-					CarModelId = 1
+					CarModelId = 1,
+					ImageUrl = ""
 				},
 				new Product
 				{
@@ -56,7 +57,8 @@ namespace EuroMotors.DataAccess.Data
 					ListPrice = 614,
 					Price = 600,
 					CategoryId = 2,
-					CarModelId = 2
+					CarModelId = 2,
+					ImageUrl = ""
 				},
 				new Product
 				{
@@ -71,7 +73,20 @@ namespace EuroMotors.DataAccess.Data
 					ListPrice = 4147,
 					Price = 4147,
 					CategoryId = 3,
-					CarModelId = 3
+					CarModelId = 3,
+					ImageUrl = ""
+				},
+				new Product
+				{
+					Id = 4,
+					Title = "Свічка розжарювання",
+					Desctiption = "Lorem Ipsum is simply dummy text of the printing and ty +pesetting industry.",
+					VendorCode = "159Rer0080",
+					Brand = "Bosch",
+					ListPrice = 507,
+					Price = 500,
+					CategoryId = 3,
+					ImageUrl = ""
 				}
 				);
 		}

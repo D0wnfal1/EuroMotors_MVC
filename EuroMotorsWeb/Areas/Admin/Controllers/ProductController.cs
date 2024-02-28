@@ -3,6 +3,7 @@ using EuroMotors.DataAccess.Repository.IRepository;
 using EuroMotors.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace EuroMotorsWeb.Areas.Admin.Controllers
@@ -17,12 +18,26 @@ namespace EuroMotorsWeb.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            List<Product> objCategoryList = _unitOfWork.Product.GetAll().ToList();
-            return View(objCategoryList);
+            List<Product> objProductList = _unitOfWork.Product.GetAll().ToList();
+			return View(objProductList);
         }
         public IActionResult Create()
         {
-            return View();
+			IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category
+				.GetAll().Select(u => new SelectListItem
+				{
+					Text = u.Name,
+					Value = u.Id.ToString()
+				});
+			IEnumerable<SelectListItem> CarModelList = _unitOfWork.CarModel
+				.GetAll().Select(u => new SelectListItem
+				{
+					Text = $"{u.Brand} - {u.Model}",
+					Value = u.Id.ToString()
+				});
+            ViewBag.CategoryList = CategoryList;
+            ViewBag.CarModelList = CarModelList;
+			return View();
         }
         [HttpPost]
         public IActionResult Create(Product obj)
