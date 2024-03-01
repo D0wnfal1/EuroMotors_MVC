@@ -1,11 +1,14 @@
 ﻿using EuroMotors.DataAccess.Data;
 using EuroMotors.DataAccess.Repository.IRepository;
 using EuroMotors.Models;
+using EuroMotors.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EuroMotorsWeb.Areas.Admin.Controllers
 {
 	[Area("Admin")]
+	[Authorize(Roles = SD.Role_Admin)]
 	public class CarModelController : Controller
 	{
 		private readonly IUnitOfWork _unitOfWork;

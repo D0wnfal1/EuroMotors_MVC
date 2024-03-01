@@ -23,10 +23,12 @@
 					<span class="navbar-toggler-icon"></span>
 				</button>
 				<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-					<ul class="navbar-nav flex-grow-1">
+					<ul class="navbar-nav me-auto">
 						<li class="nav-item">
 							<a class="nav-link" asp-controller="Home" asp-area="Customer" asp-action="Index">Домашня Сторінка</a>
 						</li>
+						@if (User.IsInRole(SD.Role_Admin))
+						{
 						<li class="nav-item dropdown">
 							<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 								Управління контентом
@@ -43,10 +45,13 @@
 								</li>
 							</ul>
 						</li>
+						}
 					</ul>
+					<partial name="_LoginPartial" />
 				</div>
 			</div>
 		</nav>
+
 	</header>
 	<div class="container">
 		<main role="main" class="">
