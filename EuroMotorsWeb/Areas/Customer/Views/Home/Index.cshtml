@@ -1,8 +1,41 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model IEnumerable<Product>
+<style>
+	.card {
+		height: 100%; /* Установка высоты для всех карточек */
+	}
+</style>
+<div class="row pb-3">
+	@foreach (var product in Model)
+	{
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+		<div class="col-lg-3 col-sm-6" >
+			<div class="row p-2" style="height: 100%">
+				<div class="col-12 p-1">
+					<div class="card border-0 p-3 shadow border-top border-5 rounded">
+						<img src="@product.ImageUrl" style="object-fit: cover; width: 274px; height: 274px;" class="card-img-top rounded" />
+						<div class="card-body pb-0">
+							<div class="pl-1">
+								<p class="card-title h5 text-primary opacity-75 text-uppercase text-center">@product.Title</p>
+								<p class="card-title text-primary opacity-75 text-uppercase text-center">@product.VendorCode</p>
+								<p class="card-title text-warning text-center">by <b>@product.Brand</b></p>
+							</div>
+							<div class="pl-1">
+
+								<p class="text-success text-opacity-75 text-center mb-0"><span class="text-decoration-line-through">@product.ListPrice.ToString("c")</span></p>
+							</div>
+							<div class="pl-1">
+
+								<p class="text-success text-opacity-75 text-center"><span>@product.Price.ToString("c")</span></p>
+							</div>
+						</div>
+						<div>
+							<a asp-action="Details" asp-route-productId="@product.Id" class="btn btn-primary bg-gradient border-0 form-control">
+								Купити
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
 </div>

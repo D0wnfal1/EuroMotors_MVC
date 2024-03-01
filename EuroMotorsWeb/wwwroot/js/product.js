@@ -42,7 +42,7 @@ function Delete(url) {
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Так, відалити!',
+        confirmButtonText: 'Так, видалити!',
         cancelButtonText: 'Відміна'
     }).then((result) => {
         if (result.isConfirmed) {
