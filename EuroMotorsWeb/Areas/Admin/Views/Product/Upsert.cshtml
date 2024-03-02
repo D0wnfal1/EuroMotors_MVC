@@ -40,17 +40,19 @@
 					<span asp-validation-for="Product.Price" class="text-danger"></span>
 				</div>
 				<div class="mb-3 p-1">
-					<select asp-for="@Model.Product.CategoryId" asp-items="@Model.CategoryList" class="form-select p-0 border-primary p-2">
+					<select asp-for="Product.CategoryId" asp-items="@Model.CategoryList" class="form-select p-0 border-primary p-2">
 						<option disabled selected>--Оберіть Категорію</option>
 					</select>
 					<span asp-validation-for="Product.CategoryId" class="text-danger"></span>
 				</div>
 				<div class="mb-3 p-1">
-					<select asp-for="@Model.Product.CarModelId" asp-items="@Model.CarModelList" class="form-select p-0 border-primary p-2">
+					<select asp-for="Product.CarModelId" asp-items="@Model.CarModelList" class="form-select p-0 border-primary p-2">
 						<option value="" selected>--Оберіть Модель Авто (необов'язково)</option>
 					</select>
 					<span asp-validation-for="Product.CarModelId" class="text-danger"></span>
 				</div>
+
+
 				<div class="mb-3 p-1">
 					<input type="file" name="file" class=" p-0"></input>
 				</div>

@@ -4,6 +4,7 @@ $(document).ready(function () {
 });
 
 function loadDataTable() {
+    
     dataTable = $('#tblData').DataTable({
         "ajax": { url: '/admin/product/getall' },
         "columns": [
@@ -16,9 +17,14 @@ function loadDataTable() {
             {
                 data: null,
                 render: function (data, type, row) {
-                    return row.carModel ? (row.carModel.brand + ' ' + row.carModel.model) : '';
+                    var carInfo = row.carModel ? (row.carModel.brand + ' ' + row.carModel.model) : '';
+                    if (row.carModel && row.carModel.year) {
+                        carInfo += ' ' + row.carModel.year;
+                    }
+                    return carInfo;
                 },
-                "width": "10%"
+
+                "width": "20%"
             },
             {
                 data: 'id',

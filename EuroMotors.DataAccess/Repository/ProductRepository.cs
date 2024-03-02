@@ -30,8 +30,8 @@ namespace EuroMotors.DataAccess.Repository
 				objFromDb.Brand = obj.Brand;
 				objFromDb.ListPrice = obj.ListPrice;
 				objFromDb.Price = obj.Price;
-				objFromDb.Category = obj.Category;
-				objFromDb.CarModel = obj.CarModel;
+				objFromDb.CategoryId = obj.CategoryId;
+				objFromDb.CarModelId = obj.CarModelId;
 				if (obj.ImageUrl != null)
 				{
 					objFromDb.ImageUrl = obj.ImageUrl;
