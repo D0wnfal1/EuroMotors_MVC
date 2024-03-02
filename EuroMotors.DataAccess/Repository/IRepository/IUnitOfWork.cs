@@ -11,6 +11,8 @@ namespace EuroMotors.DataAccess.Repository.IRepository
 		ICategoryRepository Category { get; }
 		ICarModelRepository CarModel { get; }
 		IProductRepository Product { get; }
+		IShoppingCartRepository ShoppingCart { get; }
+		IApplicationUserRepository ApplicationUser { get; }
 		public void Save();
 	}
 }
