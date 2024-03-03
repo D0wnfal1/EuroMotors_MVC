@@ -8,7 +8,7 @@
 	@foreach (var product in Model)
 	{
 
-		<div class="col-lg-3 col-sm-6" >
+		<div class="col-lg-3 col-sm-6">
 			<div class="row p-2" style="height: 100%">
 				<div class="col-12 p-1">
 					<div class="card border-0 p-3 shadow border-top border-5 rounded">
@@ -20,14 +20,21 @@
 								<p class="card-title text-primary opacity-75 text-uppercase text-center">@product.VendorCode</p>
 								<p class="card-title text-warning text-center">by <b>@product.Brand</b></p>
 							</div>
-							<div class="pl-1">
-
-								<p class="text-success text-opacity-75 text-center mb-0"><span class="text-decoration-line-through">@product.ListPrice.ToString("c")</span></p>
-							</div>
-							<div class="pl-1">
-
-								<p class="text-success text-opacity-75 text-center"><span>@product.Price.ToString("c")</span></p>
-							</div>
+							@if (product.ListPrice != product.Price)
+							{
+								<div class="pl-1">
+									<p class="text-success text-opacity-75 text-center mb-0"><span class="text-decoration-line-through">@product.ListPrice.ToString("c")</span></p>
+								</div>
+								<div class="pl-1">
+									<p class="text-success text-opacity-75 text-center"><span>@product.Price.ToString("c")</span></p>
+								</div>
+							}
+							else
+							{
+								<div class="pl-1">
+									<p class="text-success text-opacity-75 text-center"><span>@product.Price.ToString("c")</span></p>
+								</div>
+							}
 						</div>
 						<div>
 							<a asp-action="Details" asp-route-productId="@product.Id" class="btn btn-primary bg-gradient border-0 form-control">

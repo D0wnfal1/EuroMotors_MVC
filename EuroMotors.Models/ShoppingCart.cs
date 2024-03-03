@@ -7,10 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EuroMotors.Models.ViewModels
+namespace EuroMotors.Models
 {
-	public class ShoppingCart
-	{
+    public class ShoppingCart
+    {
         public int Id { get; set; }
         public int ProductId { get; set; }
         [ForeignKey("ProductId")]
@@ -22,5 +22,8 @@ namespace EuroMotors.Models.ViewModels
         [ForeignKey("ApplicationUserId")]
         [ValidateNever]
         public ApplicationUser ApplicationUser { get; set; }
+
+        [NotMapped]
+        public double Price { get; set; }
     }
 }

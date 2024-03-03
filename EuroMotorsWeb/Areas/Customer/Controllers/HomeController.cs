@@ -1,6 +1,5 @@
 using EuroMotors.DataAccess.Repository.IRepository;
 using EuroMotors.Models;
-using EuroMotors.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
