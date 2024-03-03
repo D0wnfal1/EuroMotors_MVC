@@ -1,8 +1,10 @@
 using EuroMotors.DataAccess.Repository.IRepository;
 using EuroMotors.Models;
 using EuroMotors.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace EuroMotorsWeb.Areas.Customer.Controllers
 {
@@ -35,6 +37,31 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 
             return View(cart);
         }
+        [HttpPost]
+        [Authorize]
+        public IActionResult Details(ShoppingCart shoppingCart)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            shoppingCart.ApplicationUserId = userId;
+            ShoppingCart cartFromb = _unitOfWork.ShoppingCart.Get(u=>u.ApplicationUserId == userId && 
+            u.ProductId == shoppingCart.ProductId);
+
+            if (cartFromb != null)
+            {
+                cartFromb.Count += shoppingCart.Count;
+                _unitOfWork.ShoppingCart.Update(cartFromb);
+            }
+            else
+            {
+                _unitOfWork.ShoppingCart.Add(shoppingCart);
+            }
+            TempData["success"] = "Кошик успішно оновлений!";
+            _unitOfWork.Save();
+
+            return RedirectToAction(nameof(Index));
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

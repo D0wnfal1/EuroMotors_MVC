@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using EuroMotors.DataAccess.Data;
 using EuroMotors.DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace EuroMotors.DataAccess.Repository
 {
@@ -25,19 +26,29 @@ namespace EuroMotors.DataAccess.Repository
 			dbSet.Add(entity);
 		}
 
-		public T Get(System.Linq.Expressions.Expression<Func<T, bool>> filter, string? includeProperties = null)
+		public T Get(System.Linq.Expressions.Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked = false)
 		{
-			IQueryable<T> query = dbSet;
-			query = query.Where(filter);
-			if (!string.IsNullOrEmpty(includeProperties))
+			IQueryable<T> query;
+
+            if (tracked)
 			{
-				foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-				{
-					query = query.Include(includeProp);
-				}
+				query = dbSet;
+				
 			}
-			return query.FirstOrDefault();
-		}
+			else
+			{
+                query = dbSet.AsNoTracking();
+            }
+            query = query.Where(filter);
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
+            return query.FirstOrDefault();
+        }
 
 		public IEnumerable<T> GetAll(string? includeProperties = null)
 		{
