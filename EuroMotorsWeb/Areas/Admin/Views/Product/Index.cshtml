@@ -12,7 +12,7 @@
 			</a>
 		</div>
 	</div>
-	<table  id="tblData" class="table table-bordered border-primary table-striped table-light" style="width:100%">
+	<table id="tblData" class="table table-bordered border-primary table-striped table-light" style="width:100%">
 		<thead class="border-2 ">
 			<tr>
 				<th class="p-2 fs-6">
@@ -61,7 +61,10 @@
 						@obj.Category.Name
 					</td>
 					<td>
-						@obj.CarModel.Brand @obj.CarModel.Model @obj.CarModel.Year
+						@if (obj.CarModel != null)
+						{
+							@obj.CarModel.Brand @obj.CarModel.Model @obj.CarModel.Year
+						}
 					</td>
 					<td>
 						<div class="w-75 btn-group" role="group">
@@ -76,5 +79,5 @@
 				</tr>
 			}
 		</tbody>
-		</table>
+	</table>
 </div>

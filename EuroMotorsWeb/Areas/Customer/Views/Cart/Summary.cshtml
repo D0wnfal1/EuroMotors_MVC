@@ -1,4 +1,5 @@
-﻿<form method="post">
+﻿@model ShoppingCartVM
+<form method="post">
 	<br />
 	<div class="container">
 		<div class="card shadow border-0">
@@ -6,11 +7,11 @@
 				<div class="row px-4">
 					<div class="col-6">
 						<h5 class="pt-2 text-white">
-							Shopping Cart
+							Підсумок Замовлення
 						</h5>
 					</div>
 					<div class="col-6 text-end">
-						<a class="btn btn-outline-danger btn-sm">Back to Cart</a>
+						<a asp-action="Index" class="btn btn-outline-danger btn-sm">Назад до Кошику</a>
 					</div>
 				</div>
 			</div>
@@ -20,67 +21,73 @@
 						<div class="col-12 col-lg-6 pb-4">
 							<div class="row">
 								<h4 class="d-flex justify-content-between align-items-center mb-3">
-									<span class="text-info">Shipping Details:</span>
+									<span class="text-info">Подробиці Відправки:</span>
 								</h4>
 							</div>
 							<div class="row my-1">
 								<div class="col-3">
-									<label>Name</label>
+									<label>Ім'я</label>
 								</div>
 								<div class="col-9">
-									<input class="form-control" />
+									<input asp-for="OrderHeader.Name" class="form-control" />
+									<span asp-validation-for="OrderHeader.Name" class="text-danger"></span>
 								</div>
 							</div>
 							<div class="row my-1">
 								<div class="col-3">
-									<label>Phone</label>
+									<label>Номер Телефону</label>
 								</div>
 								<div class="col-9">
-									<input class="form-control" />
+									<input asp-for="OrderHeader.PhoneNumber" class="form-control" />
+									<span asp-validation-for="OrderHeader.PhoneNumber" class="text-danger"></span>
 								</div>
 							</div>
 							<div class="row my-1">
 								<div class="col-3">
-									<label>Street Address</label>
+									<label>Адреса Відправки</label>
 								</div>
 								<div class="col-9">
-									<input class="form-control" />
+									<input asp-for="OrderHeader.StreetAddress" class="form-control" />
+									<span asp-validation-for="OrderHeader.StreetAddress" class="text-danger"></span>
 								</div>
 							</div>
 							<div class="row my-1">
 								<div class="col-3">
-									<label>City</label>
+									<label>Місто</label>
 								</div>
 								<div class="col-9">
-									<input class="form-control" />
+									<input asp-for="OrderHeader.City" class="form-control" />
+									<span asp-validation-for="OrderHeader.City" class="text-danger"></span>
 								</div>
 							</div>
 							<div class="row my-1">
 								<div class="col-3">
-									<label>Postal Code</label>
+									<label>Поштовий Індекс</label>
 								</div>
 								<div class="col-9">
-									<input class="form-control" />
+									<input asp-for="OrderHeader.PostalCode" class="form-control" />
+									<span asp-validation-for="OrderHeader.PostalCode" class="text-danger"></span>
 								</div>
 							</div>
 						</div>
 						<div class="col-12 col-lg-5 offset-lg-1">
 							<h4 class="d-flex justify-content-between align-items-center mb-3">
-								<span class="text-info">Order Summary:</span>
+								<span class="text-info">Всього:</span>
 							</h4>
 							<ul class="list-group mb-3">
-								<li class="list-group-item d-flex justify-content-between">
-									<div>
-										<h6 class="my-0">Title</h6>
-										<small class="text-muted">Quantity: Count</small>
-									</div>
-									<span class="text-muted">Price * Count </span>
-								</li>
-
-
+								@foreach (var details in Model.ShoppingCartList)
+								{
+									<li class="list-group-item d-flex justify-content-between">
+										<div>
+											<h6 class="my-0">@details.Product.Title</h6>
+											<small class="text-muted">Кількість: @details.Count</small>
+										</div>
+										<span class="text-muted">@((details.Price*details.Count).ToString("c")) </span>
+									</li>
+								}
 								<li class="list-group-item d-flex justify-content-between bg-light">
-									<small class="text-info">Total (USD)</small>
-									<strong class="text-info">$$</strong>
+									<small class="text-info">Всього (ГРН)</small>
+									<strong class="text-info">@Model.OrderHeader.OrderTotal.ToString("c")</strong>
 								</li>
 							</ul>
 						</div>
@@ -91,11 +98,11 @@
 				<div class="row">
 					<div class="col-12 col-md-8 pt-2">
 						<p style="color:maroon; font-size:14px;">
-							Estimate Arrival Date:
+							Орієнтовна дата прибуття: @DateTime.Now.AddDays(2).ToShortDateString() - @DateTime.Now.AddDays(3).ToShortDateString()
 						</p>
 					</div>
 					<div class="col-12 col-md-4">
-						<button type="submit" value="Place Order" class="btn btn-primary form-control">Place Order</button>
+						<button type="submit" value="Place Order" class="btn btn-primary form-control">Зробити Замовлення</button>
 					</div>
 				</div>
 			</div>
