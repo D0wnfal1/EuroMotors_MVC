@@ -7,13 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="LiqPay" Version="2023.5.307.406" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Stripe.net" Version="43.17.0" />
   </ItemGroup>
 
   <ItemGroup>
