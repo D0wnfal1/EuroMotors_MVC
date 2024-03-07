@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/EuroMotorsWeb/Areas/Customer/Controllers/LiqPayCheckout.cs
+/EuroMotorsWeb/Areas/Customer/Controllers/LiqPayCheckoutFormModel.cs
+/EuroMotorsWeb/Areas/Customer/Controllers/LiqPayHelper.cs
