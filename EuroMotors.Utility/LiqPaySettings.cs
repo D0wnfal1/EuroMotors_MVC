@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace EuroMotors.Utility
 {
-    public class StripeSettings
-    {
-        public string SecretKey { get; set; }
-        public string PublishableKey { get; set; }
-    }
+	public class LiqPaySettings
+	{
+		public string PublicKey { get; set; }
+		public string PrivateKey { get; set; }
+	}
 }

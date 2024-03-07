@@ -14,45 +14,45 @@ using Stripe.Checkout;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using Session = Stripe.Checkout.Session;
-using SessionCreateOptions = Stripe.Checkout.SessionCreateOptions;
-using SessionService = Stripe.Checkout.SessionService;
+
 
 namespace EuroMotorsWeb.Areas.Customer.Controllers
 {
-    [Area("Customer")]
-    [Authorize]
-    public class CartController : Controller
-    {
-        private readonly IUnitOfWork _unitOfWork;
-        [BindProperty]
-        public ShoppingCartVM ShoppingCartVM { get; set; }
-        public CartController(IUnitOfWork unitOfWork)
-        {
-            _unitOfWork = unitOfWork;
-        }
-        public IActionResult Index()
-        {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+	[Area("Customer")]
+	[Authorize]
+	public class CartController : Controller
+	{
+		private readonly IUnitOfWork _unitOfWork;
+		private readonly LiqPayClient _liqPayClient;
+		[BindProperty]
+		public ShoppingCartVM ShoppingCartVM { get; set; }
+		public CartController(IUnitOfWork unitOfWork, IOptions<LiqPaySettings> liqPaySettings)
+		{
+			_unitOfWork = unitOfWork;
+			_liqPayClient = new LiqPayClient(liqPaySettings.Value.PublicKey, liqPaySettings.Value.PrivateKey);
+		}
+		public IActionResult Index()
+		{
+			var claimsIdentity = (ClaimsIdentity)User.Identity;
+			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
 			ShoppingCartVM = new()
-            {
-                ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product"),
-                OrderHeader = new()
-            };
+			{
+				ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product"),
+				OrderHeader = new()
+			};
 
 			foreach (var cart in ShoppingCartVM.ShoppingCartList)
-            {
-                cart.Price = cart.Product.Price;
-                ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
-            }
+			{
+				cart.Price = cart.Product.Price;
+				ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
+			}
 
-            return View(ShoppingCartVM);
-        }
+			return View(ShoppingCartVM);
+		}
 
-        public IActionResult Summary() 
-        {
+		public IActionResult Summary()
+		{
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
 			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
@@ -77,20 +77,18 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			}
 
 			return View(ShoppingCartVM);
-        }
-        [HttpPost]
-        [ActionName("Summary")]
-		public async Task<IActionResult> SummaryPOSTAsync()
+		}
+		[HttpPost]
+		[ActionName("Summary")]
+		public IActionResult SummaryPOST()
 		{
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
 			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            ShoppingCartVM.ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product");
-			
-            ShoppingCartVM.OrderHeader.OrderDate = DateTime.Now;
-            ShoppingCartVM.OrderHeader.ApplicationUserId = userId;
+			ShoppingCartVM.ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product");
 
-			ApplicationUser applicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == userId);
+			ShoppingCartVM.OrderHeader.OrderDate = DateTime.Now;
+			ShoppingCartVM.OrderHeader.ApplicationUserId = userId;
 
 			foreach (var cart in ShoppingCartVM.ShoppingCartList)
 			{
@@ -100,62 +98,74 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 
 			ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusPending;
 			ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
-            _unitOfWork.OrderHeader.Add(ShoppingCartVM.OrderHeader);
-            _unitOfWork.Save();
-            foreach (var cart in ShoppingCartVM.ShoppingCartList)
-            {
-                OrderDetail orderDetail = new()
-                {
-                    ProductId = cart.ProductId,
-                    OrderHeaderId = ShoppingCartVM.OrderHeader.Id,
-                    Price = cart.Price,
-                    Count = cart.Count,
-                };
-                _unitOfWork.OrderDetail.Add(orderDetail);
-                _unitOfWork.Save();
-            }
+			_unitOfWork.OrderHeader.Add(ShoppingCartVM.OrderHeader);
+			_unitOfWork.Save();
+			var domain = "https://localhost:7159/";
+			var paymentRequest = new LiqPayRequest
+			{
+				Amount = ShoppingCartVM.OrderHeader.OrderTotal,
+				Currency = "UAH",
+				IsSandbox = true,
+				OrderId = ShoppingCartVM.OrderHeader.Id.ToString(),
+				Action = LiqPayRequestAction.Pay,
+				Language = LiqPayRequestLanguage.UK,
+				Description = "Оплата заказа #" + ShoppingCartVM.OrderHeader.Id,
+				Goods = ShoppingCartVM.ShoppingCartList.Select(cart => new LiqPayRequestGoods
+				{
+					Amount = cart.Price * 100,
+					Count = cart.Count,
+					Unit = "шт.",
+					Name = cart.Product.Title
+				}).ToList(),
+				  ResultUrl = domain + $"customer/cart/OrderConfirmation?id={ShoppingCartVM.OrderHeader.Id}",
+				ServerUrl = domain + "customer/cart/index",
+			};
 
+            string paymentForm = _liqPayClient.CNBForm(paymentRequest);
 
-            return RedirectToAction(nameof(OrderConfirmation), new { id = ShoppingCartVM.OrderHeader.Id });
+            return Content(paymentForm, "text/html");
         }
 
 
 
-        public IActionResult OrderConfirmation(int id) 
-        {
-            return View(id);
-        }
+
+
+
+		public IActionResult OrderConfirmation(int id)
+		{
+			return View(id);
+		}
 
 		public IActionResult Plus(int cardId)
-        {
-            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cardId);
-            cartFromDb.Count += 1;
-            _unitOfWork.ShoppingCart.Update(cartFromDb);
-            _unitOfWork.Save();
-            return RedirectToAction(nameof(Index));
-        }
-        public IActionResult Minus(int cardId)
-        {
-            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cardId);
-            if (cartFromDb.Count <= 1)
-            {
-                _unitOfWork.ShoppingCart.Remove(cartFromDb);
-            }
-            else
-            {
-                cartFromDb.Count -= 1;
-                _unitOfWork.ShoppingCart.Update(cartFromDb);
+		{
+			var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cardId);
+			cartFromDb.Count += 1;
+			_unitOfWork.ShoppingCart.Update(cartFromDb);
+			_unitOfWork.Save();
+			return RedirectToAction(nameof(Index));
+		}
+		public IActionResult Minus(int cardId)
+		{
+			var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cardId);
+			if (cartFromDb.Count <= 1)
+			{
+				_unitOfWork.ShoppingCart.Remove(cartFromDb);
+			}
+			else
+			{
+				cartFromDb.Count -= 1;
+				_unitOfWork.ShoppingCart.Update(cartFromDb);
 
-            }
-            _unitOfWork.Save();
-            return RedirectToAction(nameof(Index));
-        }
-        public IActionResult Remove(int cardId)
-        {
-            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cardId);
-            _unitOfWork.ShoppingCart.Remove(cartFromDb);
-            _unitOfWork.Save();
-            return RedirectToAction(nameof(Index));
-        }
-    }
+			}
+			_unitOfWork.Save();
+			return RedirectToAction(nameof(Index));
+		}
+		public IActionResult Remove(int cardId)
+		{
+			var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cardId);
+			_unitOfWork.ShoppingCart.Remove(cartFromDb);
+			_unitOfWork.Save();
+			return RedirectToAction(nameof(Index));
+		}
+	}
 }
