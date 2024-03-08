@@ -1,5 +1,12 @@
 ﻿@model ShoppingCartVM
-<form method="post">
+<form id="form-index" method="post" action="https://www.liqpay.ua/api/3/checkout">
+@* 	<input type="hidden" name="data" value="@Model.Data" />
+	<input type="hidden" name="signature" value="@Model.Signature" />
+</form>
+
+<form id="form-summary" method="post"> *@
+	<input type="hidden" name="data" value="@Model.Data" />
+	<input type="hidden" name="signature" value="@Model.Signature" />
 
 	<br />
 	<div class="container">
@@ -102,8 +109,9 @@
 							Орієнтовна дата прибуття: @DateTime.Now.AddDays(2).ToShortDateString() - @DateTime.Now.AddDays(3).ToShortDateString()
 						</p>
 					</div>
+					
 					<div class="col-12 col-md-4">
-						<button type="submit" value="Place Order" class="btn btn-primary form-control">Зробити Замовлення</button>
+							<button id="submit-btn" type="submit" value="Place Order" class="btn btn-primary form-control">Зробити Замовлення</button>
 					</div>
 				</div>
 			</div>

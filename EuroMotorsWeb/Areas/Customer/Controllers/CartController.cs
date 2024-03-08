@@ -15,9 +15,9 @@ using Stripe.BillingPortal;
 using Stripe.Checkout;
 using Stripe.FinancialConnections;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-
 
 namespace EuroMotorsWeb.Areas.Customer.Controllers
 {
@@ -79,11 +79,49 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 				ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
 			}
 
+			var domain = "https://localhost:7159/";
+			var paymentRequest = new LiqPayRequest
+			{
+				PublicKey = "sandbox_i8173007271",
+				Amount = ShoppingCartVM.OrderHeader.OrderTotal,
+				Currency = "UAH",
+				IsSandbox = true,
+				OrderId = ShoppingCartVM.OrderHeader.Id.ToString(),
+				Action = LiqPayRequestAction.Pay,
+				Language = LiqPayRequestLanguage.UK,
+				Description = "Оплата заказа #" + ShoppingCartVM.OrderHeader.Id,
+				Goods = ShoppingCartVM.ShoppingCartList.Select(cart => new LiqPayRequestGoods
+				{
+					Amount = cart.Price * 100,
+					Count = cart.Count,
+					Unit = "шт.",
+					Name = cart.Product.Title
+				}).ToList(),
+				ResultUrl = domain + $"Customer/Cart/OrderConfirmation?id={ShoppingCartVM.OrderHeader.Id}",
+				ServerUrl = domain + $"Customer/Cart/OrderConfirmation?id={ShoppingCartVM.OrderHeader.Id}",
+			};
+
+			var json_string = JsonConvert.SerializeObject(paymentRequest);
+			var data_hash = Convert.ToBase64String(Encoding.UTF8.GetBytes(json_string));
+			var signature_hash = GetLiqPaySignature(data_hash);
+
+			string paymentForm = _liqPayClient.CNBForm(paymentRequest);
+
+			//Response.ContentType = "text/html";
+			//await Response.WriteAsync(paymentForm);
+
+
+			//_unitOfWork.OrderHeader.UpdateStatus(ShoppingCartVM.OrderHeader.Id, SD.StatusPending, SD.PaymentStatusPending);
+			//_unitOfWork.Save();
+			ShoppingCartVM.Data = data_hash;
+			ShoppingCartVM.Signature = signature_hash;
+			_unitOfWork.Save();
+
 			return View(ShoppingCartVM);
 		}
 		[HttpPost]
 		[ActionName("Summary")]
-		public async void SummaryPOST()
+		public IActionResult SummaryPOST()
 		{
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
 			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -103,37 +141,20 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
 			_unitOfWork.OrderHeader.Add(ShoppingCartVM.OrderHeader);
 			_unitOfWork.Save();
-			var domain = "https://localhost:7159/";
-			var paymentRequest = new LiqPayRequest
-			{
-				Amount = ShoppingCartVM.OrderHeader.OrderTotal,
-				Currency = "UAH",
-				IsSandbox = true,
-				OrderId = ShoppingCartVM.OrderHeader.Id.ToString(),
-				Action = LiqPayRequestAction.Pay,
-				Language = LiqPayRequestLanguage.UK,
-				Description = "Оплата заказа #" + ShoppingCartVM.OrderHeader.Id,
-				Goods = ShoppingCartVM.ShoppingCartList.Select(cart => new LiqPayRequestGoods
-				{
-					Amount = cart.Price * 100,
-					Count = cart.Count,
-					Unit = "шт.",
-					Name = cart.Product.Title
-				}).ToList(),
-				ResultUrl = domain + $"Customer/Cart/OrderConfirmation?id={ShoppingCartVM.OrderHeader.Id}",
-				ServerUrl = domain + $"Customer/Cart/OrderConfirmation?id={ShoppingCartVM.OrderHeader.Id}",
-			};
-
-			string paymentForm = _liqPayClient.CNBForm(paymentRequest);
-			Response.ContentType = "text/html";
-			await Response.WriteAsync(paymentForm);
 
 
-			_unitOfWork.OrderHeader.UpdateStatus(ShoppingCartVM.OrderHeader.Id, SD.StatusPending, SD.PaymentStatusPending);
-			_unitOfWork.Save();
+			return RedirectToAction(nameof(OrderConfirmation), new { id = ShoppingCartVM.OrderHeader.Id });
+
+
 		}
+		static public string GetLiqPaySignature(string data)
+		{
+			return Convert.ToBase64String(SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes("sandbox_Qu3XYSm6NF91gKyXWRFMPiHrXY2aX274vvs6Vo8e" + data + "sandbox_Qu3XYSm6NF91gKyXWRFMPiHrXY2aX274vvs6Vo8e")));
+		}
+
 		public IActionResult OrderConfirmation(int id)
 		{
+
 			//string paymentStatus = DeterminePaymentStatus(response.Status);
 
 			//_unitOfWork.OrderHeader.UpdateStatus(response.Id, paymentStatus, paymentStatus);
