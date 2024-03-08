@@ -26,7 +26,6 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 	public class CartController : Controller
 	{
 		private readonly IUnitOfWork _unitOfWork;
-		LiqPayResponseStatus _response;
 		private readonly LiqPayClient _liqPayClient;
 		[BindProperty]
 		public ShoppingCartVM ShoppingCartVM { get; set; }
