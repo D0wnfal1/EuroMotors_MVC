@@ -1,8 +1,8 @@
-﻿@model int
+﻿@model LiqPayResponse
 <div class="container row pt-4">
     <div class="col-12 text-center">
         <h1 class="text-primary text-center">Замовлення успішно оформлено!</h1>
-        Ваш номер замовлення : @Model <br /><br />
+        Ваш номер замовлення : @Model.OrderId <br /><br />
         <img src="~/images/OrderConfirmation.png" width="40%"  />
     </div>
     <div class="col-12 text-center" style="color:maroon">

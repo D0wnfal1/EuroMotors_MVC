@@ -1,4 +1,5 @@
-﻿using EuroMotors.DataAccess.Repository.IRepository;
+﻿using Azure;
+using EuroMotors.DataAccess.Repository.IRepository;
 using EuroMotors.Models;
 using EuroMotors.Models.ViewModels;
 using EuroMotors.Utility;
@@ -9,8 +10,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Stripe;
 using Stripe.BillingPortal;
 using Stripe.Checkout;
+using Stripe.FinancialConnections;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -23,6 +26,7 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 	public class CartController : Controller
 	{
 		private readonly IUnitOfWork _unitOfWork;
+		LiqPayResponseStatus _response;
 		private readonly LiqPayClient _liqPayClient;
 		[BindProperty]
 		public ShoppingCartVM ShoppingCartVM { get; set; }
@@ -80,7 +84,7 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 		}
 		[HttpPost]
 		[ActionName("Summary")]
-		public IActionResult SummaryPOST()
+		public async void SummaryPOST()
 		{
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
 			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -117,24 +121,41 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 					Unit = "шт.",
 					Name = cart.Product.Title
 				}).ToList(),
-				  ResultUrl = domain + $"customer/cart/OrderConfirmation?id={ShoppingCartVM.OrderHeader.Id}",
-				ServerUrl = domain + "customer/cart/index",
+				ResultUrl = domain + $"Customer/Cart/OrderConfirmation?id={ShoppingCartVM.OrderHeader.Id}",
+				ServerUrl = domain + $"Customer/Cart/OrderConfirmation?id={ShoppingCartVM.OrderHeader.Id}",
 			};
 
-            string paymentForm = _liqPayClient.CNBForm(paymentRequest);
-
-            return Content(paymentForm, "text/html");
-        }
-
+			string paymentForm = _liqPayClient.CNBForm(paymentRequest);
+			Response.ContentType = "text/html";
+			await Response.WriteAsync(paymentForm);
 
 
-
-
-
+			_unitOfWork.OrderHeader.UpdateStatus(ShoppingCartVM.OrderHeader.Id, SD.StatusPending, SD.PaymentStatusPending);
+			_unitOfWork.Save();
+		}
 		public IActionResult OrderConfirmation(int id)
 		{
+			//string paymentStatus = DeterminePaymentStatus(response.Status);
+
+			//_unitOfWork.OrderHeader.UpdateStatus(response.Id, paymentStatus, paymentStatus);
+			//_unitOfWork.Save();
+
 			return View(id);
 		}
+		//private string DeterminePaymentStatus(LiqPayResponseStatus responseStatus)
+		//{
+		//	switch (responseStatus)
+		//	{
+		//		case LiqPayResponseStatus.Success:
+		//			return SD.PaymentStatusApproved;
+		//		case LiqPayResponseStatus.Failure:
+		//			return SD.PaymentStatusRejected;
+		//		case LiqPayResponseStatus.Error:
+		//			return SD.PaymentStatusRejected;
+		//		default:
+		//			return SD.PaymentStatusPending;
+		//	}
+		//}
 
 		public IActionResult Plus(int cardId)
 		{

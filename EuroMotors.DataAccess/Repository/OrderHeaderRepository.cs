@@ -37,7 +37,7 @@ namespace EuroMotors.DataAccess.Repository
             }
         }
 
-        public void UpdateStripePaymentID(int id, string sessionId, string paymentIntentId)
+        public void UpdateLiqPayPaymentID(int id, string sessionId, string paymentIntentId)
         {
             var orderFromDb = _db.OrderHeaders.FirstOrDefault(x => x.Id == id);
             if (!string.IsNullOrEmpty(sessionId)) 
