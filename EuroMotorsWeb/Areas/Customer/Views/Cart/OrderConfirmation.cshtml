@@ -1,13 +1,23 @@
-﻿@model int
-<div class="container row pt-4">
-    <div class="col-12 text-center">
-        <h1 class="text-primary text-center">Замовлення успішно оформлено!</h1>
-        Ваш номер замовлення : @Model <br /><br />
-        <img src="~/images/OrderConfirmation.png" width="40%"  />
-    </div>
-    <div class="col-12 text-center" style="color:maroon">
-        <br />
-        Ваше замовлення успішно розміщено! <br />
-    </div>
-
-</div> 
+﻿@model ShoppingCartVM
+<form method="post" action="https://www.liqpay.ua/api/3/checkout">
+	<input type="hidden" name="data" value="@Model.Data" />
+	<input type="hidden" name="signature" value="@Model.Signature" />
+	<div class="container row pt-4">
+		<div class="col-12 text-center">
+			<h1 class="text-primary text-center">Замовлення успішно оформлено!</h1>
+			Ваш номер замовлення : @Model.OrderHeader.Id <br /><br />
+			<img src="~/images/OrderConfirmation.png" width="40%" />
+		</div>
+		<div class="col-12 text-center" style="color:maroon">
+			<br />
+			Ваше замовлення успішно розміщено! <br />
+		</div>
+		<div class="col-12 text-center" style="color:maroon">
+			<br />
+			Ви можете почекати на Дзвінок, або відразу Сплатити за Замовлення!<br />
+		</div>
+		<div class="col-4 offset-md-4 p-3">
+			<button id="submit-btn" type="submit" value="Place Order" class="btn btn-primary border-0 w-100 py-2">Сплатити за Замовлення</button>
+		</div>
+	</div>
+</form>
