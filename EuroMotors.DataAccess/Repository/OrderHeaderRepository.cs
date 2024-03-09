@@ -5,8 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EuroMotors.DataAccess.Repository
 {
@@ -37,16 +39,16 @@ namespace EuroMotors.DataAccess.Repository
             }
         }
 
-        public void UpdateLiqPayPaymentID(int id, string sessionId, string paymentIntentId)
+        public void UpdateLiqPayPaymentID(int id, string signature, string data)
         {
             var orderFromDb = _db.OrderHeaders.FirstOrDefault(x => x.Id == id);
-            if (!string.IsNullOrEmpty(sessionId)) 
+            if (!string.IsNullOrEmpty(signature)) 
             {
-                orderFromDb.SessionId = sessionId;
+                orderFromDb.Signature = signature;
             }
-            if (!string.IsNullOrEmpty(paymentIntentId))
+            if (!string.IsNullOrEmpty(data))
             {
-                orderFromDb.PaymentIntentId = paymentIntentId;
+                orderFromDb.Data = data;
                 orderFromDb.PaymentDate = DateTime.Now;
             }
         }

@@ -1,7 +1,7 @@
 ﻿@model ShoppingCartVM
 <form method="post" action="https://www.liqpay.ua/api/3/checkout">
-	<input type="hidden" name="data" value="@Model.Data" />
-	<input type="hidden" name="signature" value="@Model.Signature" />
+	<input type="hidden" name="data" value="@Model.OrderHeader.Data" />
+	<input type="hidden" name="signature" value="@Model.OrderHeader.Signature" />
 	<div class="container row pt-4">
 		<div class="col-12 text-center">
 			<h1 class="text-primary text-center">Замовлення успішно оформлено!</h1>
@@ -17,7 +17,7 @@
 			Ви можете почекати на Дзвінок, або відразу Сплатити за Замовлення!<br />
 		</div>
 		<div class="col-4 offset-md-4 p-3">
-			<button id="submit-btn" type="submit" value="Place Order" class="btn btn-primary border-0 w-100 py-2">Сплатити за Замовлення</button>
+			<button  type="submit" value="Place Order" class="btn btn-primary border-0 w-100 py-2">Сплатити за Замовлення</button>
 		</div>
 	</div>
 </form>

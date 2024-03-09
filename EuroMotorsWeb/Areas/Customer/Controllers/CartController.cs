@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EuroMotorsWeb.Areas.Customer.Controllers
 {
@@ -20,13 +21,13 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 	public class CartController : Controller
 	{
 		private readonly IUnitOfWork _unitOfWork;
-		private readonly LiqPayClient _liqPayClient;
+		private readonly IConfiguration _configuration;
 		[BindProperty]
 		public ShoppingCartVM ShoppingCartVM { get; set; }
-		public CartController(IUnitOfWork unitOfWork, IOptions<LiqPaySettings> liqPaySettings)
+		public CartController(IUnitOfWork unitOfWork, IConfiguration configuration)
 		{
 			_unitOfWork = unitOfWork;
-			_liqPayClient = new LiqPayClient(liqPaySettings.Value.PublicKey, liqPaySettings.Value.PrivateKey);
+			_configuration = configuration;
 		}
 		public IActionResult Index()
 		{
@@ -95,10 +96,6 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			_unitOfWork.Save();
 			return RedirectToAction(nameof(OrderConfirmation), new { id = ShoppingCartVM.OrderHeader.Id });
 		}
-		static public string GetLiqPaySignature(string data)
-		{
-			return Convert.ToBase64String(SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes("sandbox_Qu3XYSm6NF91gKyXWRFMPiHrXY2aX274vvs6Vo8e" + data + "sandbox_Qu3XYSm6NF91gKyXWRFMPiHrXY2aX274vvs6Vo8e")));
-		}
 
 		public IActionResult OrderConfirmation(int id)
 		{
@@ -123,10 +120,9 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			var domain = "https://localhost:7159/";
 			var paymentRequest = new LiqPayRequest
 			{
-				PublicKey = "sandbox_i8173007271",
+				PublicKey = _configuration["LiqPaySettings:PublicKey"],
 				Amount = ShoppingCartVM.OrderHeader.OrderTotal,
 				Currency = "UAH",
-				IsSandbox = true,
 				OrderId = ShoppingCartVM.OrderHeader.Id.ToString(),
 				Action = LiqPayRequestAction.Pay,
 				Language = LiqPayRequestLanguage.UK,
@@ -139,17 +135,18 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 					Name = cart.Product.Title
 				}).ToList(),
 				ResultUrl = domain + $"Customer/Home/Index",
+				ServerUrl = domain + $"Customer/Home/Index",
 			};
 
 			var json_string = JsonConvert.SerializeObject(paymentRequest);
 			var data_hash = Convert.ToBase64String(Encoding.UTF8.GetBytes(json_string));
-			var signature_hash = GetLiqPaySignature(data_hash);
-			ShoppingCartVM.Data = data_hash;
-			ShoppingCartVM.Signature = signature_hash;
-
+			var signature_hash = Convert.ToBase64String(SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes(_configuration["LiqPaySettings:PrivateKey"] + data_hash + _configuration["LiqPaySettings:PrivateKey"])));
+			ShoppingCartVM.OrderHeader.Data = data_hash;
+			ShoppingCartVM.OrderHeader.Signature = signature_hash;
+			_unitOfWork.OrderHeader.UpdateLiqPayPaymentID(id, ShoppingCartVM.OrderHeader.Signature, ShoppingCartVM.OrderHeader.Data);
+			_unitOfWork.Save();
 			return View(ShoppingCartVM);
 		}
-
 		public IActionResult Plus(int cardId)
 		{
 			var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cardId);
