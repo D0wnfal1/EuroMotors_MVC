@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using static System.Net.WebRequestMethods;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EuroMotorsWeb.Areas.Customer.Controllers
@@ -96,7 +97,7 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			_unitOfWork.Save();
 			return RedirectToAction(nameof(OrderConfirmation), new { id = ShoppingCartVM.OrderHeader.Id });
 		}
-
+		
 		public IActionResult OrderConfirmation(int id)
 		{
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
@@ -135,8 +136,7 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 					Unit = "шт.",
 					Name = cart.Product.Title
 				}).ToList(),
-				ResultUrl = domain + $"Customer/Home/Index",
-				ServerUrl = domain + $"Customer/Home/Index",
+				ResultUrl = domain + $"Customer/Home/Redirect",
 			};
 
 			var json_string = JsonConvert.SerializeObject(paymentRequest);
@@ -146,7 +146,6 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			ShoppingCartVM.OrderHeader.Signature = signature_hash;
 			_unitOfWork.OrderHeader.UpdateLiqPayPaymentID(id, ShoppingCartVM.OrderHeader.Signature, ShoppingCartVM.OrderHeader.Data);
 			_unitOfWork.Save();
-
 			List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
 			_unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
 			_unitOfWork.Save();
