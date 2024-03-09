@@ -5,7 +5,7 @@
 	<div class="card-header bg-primary bg-gradient ml-0 py-4">
 		<div class="row">
 			<div class="col-12 text-center">
-				<h2 class="py-2 text-white">Log in</h2>
+				<h2 class="py-2 text-white">Увійти</h2>
 			</div>
 		</div>
 	</div>
@@ -15,16 +15,17 @@
 				<section>
 					<form id="account" method="post">
 						<h3 class="border-bottom pb-3 mb-4 text-center">
-							Use a local account to log in.</h3>
+							Використовуйте локальний обліковий запис для входу.
+						</h3>
 						<div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 						<div class="form-floating mb-3">
-							<input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-							<label asp-for="Input.Email" class="form-label">Email</label>
+							<input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="ім'я@example.com" />
+							<label asp-for="Input.Email" class="form-label">Електронна пошта</label>
 							<span asp-validation-for="Input.Email" class="text-danger"></span>
 						</div>
 						<div class="form-floating mb-3">
-							<input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
-							<label asp-for="Input.Password" class="form-label">Password</label>
+							<input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="пароль" />
+							<label asp-for="Input.Password" class="form-label">Пароль</label>
 							<span asp-validation-for="Input.Password" class="text-danger"></span>
 						</div>
 						<div class="checkbox mb-3">
@@ -34,17 +35,17 @@
 							</label>
 						</div>
 						<div>
-							<button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+							<button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Увійти</button>
 						</div>
 						<div class="d-flex justify-content-between pt-2">
 							<p>
-								<a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+								<a id="forgot-password" asp-page="./ForgotPassword">Забули пароль?</a>
 							</p>
 							<p>
-								<a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+								<a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Зареєструватися як новий користувач</a>
 							</p>
 							<p>
-								<a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
+								<a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Відправити підтвердження електронної пошти ще раз</a>
 							</p>
 						</div>
 					</form>
@@ -52,16 +53,16 @@
 			</div>
 			<div class="col-md-12">
 				<section>
-					<p class="divider-text d-flex pt-2">or</p>
-					<h3>Use another service to log in.</h3>
+					<p class="divider-text d-flex pt-2">або</p>
+					<h3>Використовуйте інший сервіс для входу.</h3>
 					@{
 						if ((Model.ExternalLogins?.Count ?? 0) == 0)
 						{
 							<div>
 								<p>
-									There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
-										article
-										about setting up this ASP.NET application to support logging in via external services
+									Немає налаштованих зовнішніх служб автентифікації. Див. цю <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
+										статтю
+										про налаштування цього застосунку ASP.NET для підтримки входу через зовнішні служби
 									</a>.
 								</p>
 							</div>
@@ -73,7 +74,7 @@
 									<p>
 										@foreach (var provider in Model.ExternalLogins!)
 										{
-											<button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+											<button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Увійти, використовуючи обліковий запис @provider.DisplayName">@provider.DisplayName</button>
 										}
 									</p>
 								</div>

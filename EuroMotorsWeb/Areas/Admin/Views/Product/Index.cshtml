@@ -12,7 +12,7 @@
 			</a>
 		</div>
 	</div>
-	<table id="tblData" class="table table-bordered border-primary table-striped table-light" style="width:100%">
+	<table id="tblData" class="table table-bordered table-striped" style="width:100%">
 		<thead class="border-2 ">
 			<tr>
 				<th class="p-2 fs-6">
@@ -40,44 +40,8 @@
 				<th></th>
 			</tr>
 		</thead>
-		<tbody>
-			@foreach (var obj in Model)
-			{
-				<tr>
-					<td>@obj.Title</td>
-					<td>
-						@obj.Brand
-					</td>
-					<td>
-						@obj.VendorCode
-					</td>
-					<td>
-						@obj.ListPrice
-					</td>
-					<td>
-						@obj.Price
-					</td>
-					<td>
-						@obj.Category.Name
-					</td>
-					<td>
-						@if (obj.CarModel != null)
-						{
-							@obj.CarModel.Brand @obj.CarModel.Model @obj.CarModel.Year
-						}
-					</td>
-					<td>
-						<div class="w-75 btn-group" role="group">
-							<a asp-controller="Product" asp-action="Upsert" asp-route-id="@obj.Id" class="btn btn-primary mx-2">
-								<i class="bi bi-pencil-square"></i> Edit
-							</a>
-							<a asp-controller="Product" asp-action="Delete" asp-route-id="@obj.Id" class="btn btn-danger mx-2">
-								<i class="bi bi-trash-fill"></i> Delete
-							</a>
-						</div>
-					</td>
-				</tr>
-			}
-		</tbody>
 	</table>
 </div>
+@section Scripts {
+	<script src="~/js/product.js"></script>
+}

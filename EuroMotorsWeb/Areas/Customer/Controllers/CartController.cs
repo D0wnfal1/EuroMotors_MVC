@@ -117,7 +117,8 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 				ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
 			}
 			ShoppingCartVM.OrderHeader.Id = id;
-			var domain = "https://localhost:7159/";
+			OrderHeader orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == id, includeProperties: "ApplicationUser");
+            var domain = "https://localhost:7159/";
 			var paymentRequest = new LiqPayRequest
 			{
 				PublicKey = _configuration["LiqPaySettings:PublicKey"],
@@ -145,6 +146,11 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			ShoppingCartVM.OrderHeader.Signature = signature_hash;
 			_unitOfWork.OrderHeader.UpdateLiqPayPaymentID(id, ShoppingCartVM.OrderHeader.Signature, ShoppingCartVM.OrderHeader.Data);
 			_unitOfWork.Save();
+
+			List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
+			_unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
+			_unitOfWork.Save();
+
 			return View(ShoppingCartVM);
 		}
 		public IActionResult Plus(int cardId)

@@ -24,7 +24,7 @@ function loadDataTable() {
                     return carInfo;
                 },
 
-                "width": "20%"
+                "width": "10%"
             },
             {
                 data: 'id',
