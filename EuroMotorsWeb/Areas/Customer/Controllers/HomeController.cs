@@ -2,9 +2,12 @@ using EuroMotors.DataAccess.Repository.IRepository;
 using EuroMotors.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EuroMotorsWeb.Areas.Customer.Controllers
 {
@@ -13,11 +16,13 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IUnitOfWork _unitOfWork;
+		private readonly IConfiguration _configuration;
 
-        public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork)
+		public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork, IConfiguration configuration)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
+            _configuration = configuration;
         }
 
         public IActionResult Index()
@@ -61,7 +66,7 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
+	
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
