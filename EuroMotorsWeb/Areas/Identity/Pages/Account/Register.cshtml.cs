@@ -83,20 +83,16 @@ namespace EuroMotorsWeb.Areas.Identity.Pages.Account
 			[ValidateNever]
 			public IEnumerable<SelectListItem> RoleList { get; set; }
 
-			[Required]
-			[StringLength(100, ErrorMessage = "Поле {0} повинно містити мінімум {2} та максимум {1} символів.", MinimumLength = 1)]
 			[Display(Name = "Ім'я")]
-			public string Name { get; set; }
+			public string? Name { get; set; }
 
 			public string? StreetAdress { get; set; }
 			public string? City { get; set; }
 			public string? PostalCode { get; set; }
 
-			[Required]
-			[StringLength(100, ErrorMessage = "Поле {0} повинно містити мінімум {2} та максимум {1} символів.", MinimumLength = 9)]
 			[DataType(DataType.PhoneNumber)]
 			[Display(Name = "Номер телефону")]
-			public string PhoneNumber { get; set; }
+			public string? PhoneNumber { get; set; }
 		}
 
 		public async Task OnGetAsync(string returnUrl = null)

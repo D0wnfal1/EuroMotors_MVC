@@ -56,7 +56,7 @@ namespace EuroMotorsWeb.Areas.Identity.Pages.Account.Manage
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Phone]
-            [Display(Name = "Phone number")]
+            [Display(Name = "Номер Телефону")]
             public string PhoneNumber { get; set; }
         }
 
@@ -78,7 +78,7 @@ namespace EuroMotorsWeb.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Не вдалося завантажити користувача з ідентифікатором '{_userManager.GetUserId(User)}'.");
             }
 
             await LoadAsync(user);
@@ -90,7 +90,7 @@ namespace EuroMotorsWeb.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Не вдалося завантажити користувача з ідентифікатором '{_userManager.GetUserId(User)}'.");
             }
 
             if (!ModelState.IsValid)
@@ -105,13 +105,13 @@ namespace EuroMotorsWeb.Areas.Identity.Pages.Account.Manage
                 var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
                 if (!setPhoneResult.Succeeded)
                 {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
+                    StatusMessage = "Неочікувана помилка під час спроби встановити номер телефону.";
                     return RedirectToPage();
                 }
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
+            StatusMessage = "Ваш профіль був оновлений";
             return RedirectToPage();
         }
     }
