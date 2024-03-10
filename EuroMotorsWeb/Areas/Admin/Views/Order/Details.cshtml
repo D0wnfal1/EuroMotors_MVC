@@ -1,0 +1,170 @@
+﻿@model OrderVM
+<form method="post">
+	<br />
+	<div class="container">
+		<div class="card">
+			<div class="card-header bg-primary text-light ml-0">
+				<div class="container row">
+					<div class="col-12 d-none d-md-block col-md-6 pb-1">
+						<i class="fas fa-shopping-cart"></i> &nbsp; <h4>Опис Замовлення</h4>
+					</div>
+					<div class="col-12 col-md-4 offset-md-2 pt-3 text-right">
+						<a asp-action="Index" class="btn btn-secondary form-control ">Назад до Замовлень</a>
+					</div>
+				</div>
+			</div>
+			<div class="card-body">
+				<div class="container rounded p-2">
+					<div class="row">
+						<div class="col-12 col-lg-6 pb-4">
+							<div class="row">
+								<h4 class="d-flex justify-content-between align-items-center mb-3">
+									<span class="text-primary">Деталі для виїзду:</span>
+								</h4>
+							</div>
+							<div class="row my-1">
+								<div class="col-3">Ім'я</div>
+								<div class="col-9">
+									@if (User.IsInRole(SD.Role_Admin))
+									{
+										<input asp-for="OrderHeader.Name" type="text" class="form-control" />
+										<span asp-validation-for="OrderHeader.Name" class="text-danger"></span>
+									}
+								</div>
+							</div>
+							<div class="row my-1">
+								<div class="col-3">Телефон</div>
+								<div class="col-9">
+									@if (User.IsInRole(SD.Role_Admin))
+									{
+										<input asp-for="OrderHeader.PhoneNumber" type="text" class="form-control" />
+										<span asp-validation-for="OrderHeader.PhoneNumber" class="text-danger"></span>
+									}
+								</div>
+							</div>
+							<div class="row my-1">
+								<div class="col-3">Адреса</div>
+								<div class="col-9">
+									@if (User.IsInRole(SD.Role_Admin))
+									{
+										<input asp-for="OrderHeader.StreetAddress" type="text" class="form-control" />
+										<span asp-validation-for="OrderHeader.StreetAddress" class="text-danger"></span>
+									}
+								</div>
+							</div>
+							<div class="row my-1">
+								<div class="col-3">Місто</div>
+								<div class="col-9">
+									@if (User.IsInRole(SD.Role_Admin))
+									{
+										<input asp-for="OrderHeader.City" type="text" class="form-control" />
+										<span asp-validation-for="OrderHeader.City" class="text-danger"></span>
+									}
+								</div>
+							</div>
+							<div class="row my-1">
+								<div class="col-3">Поштовий код</div>
+								<div class="col-9">
+									@if (User.IsInRole(SD.Role_Admin))
+									{
+										<input asp-for="OrderHeader.PostalCode" type="text" class="form-control" />
+										<span asp-validation-for="OrderHeader.PostalCode" class="text-danger"></span>
+									}
+								</div>
+							</div>
+							<div class="row my-1">
+								<div class="col-3">Електронна пошта</div>
+								<div class="col-9">
+									<input asp-for="OrderHeader.ApplicationUser.Email" readonly type="text" class="form-control" />
+								</div>
+							</div>
+							<div class="row my-1">
+								<div class="col-3">Дата замовлення</div>
+								<div class="col-9">
+									<input value="@Model.OrderHeader.OrderDate.ToShortDateString()" readonly type="text" class="form-control" />
+								</div>
+							</div>
+							<div class="row my-1">
+								<div class="col-3">Перевізник</div>
+								<div class="col-9">
+									@if (User.IsInRole(SD.Role_Admin))
+									{
+										<input asp-for="OrderHeader.Carrier" type="text" class="form-control" />
+									}
+								</div>
+							</div>
+							<div class="row my-1">
+								<div class="col-3">Відстеження</div>
+								<div class="col-9">
+									@if (User.IsInRole(SD.Role_Admin))
+									{
+										<input asp-for="OrderHeader.TrackingNumber" type="text" class="form-control" />
+									}
+								</div>
+							</div>
+							<div class="row my-1">
+								<div class="col-3">Дата відправлення</div>
+								<div class="col-9">
+									<input value="@Model.OrderHeader.ShippingDate.ToShortDateString()" readonly type="text" class="form-control" />
+								</div>
+							</div>
+							<div class="row my-1">
+								<div class="col-3">Дата оплати</div>
+								<div class="col-9">
+									<input value="@Model.OrderHeader.PaymentDate.ToShortDateString()" readonly type="text" class="form-control" />
+								</div>
+							</div>
+							<div class="row my-1">
+								<div class="col-3">Статус оплати</div>
+								<div class="col-9">
+									<input asp-for="OrderHeader.PaymentStatus" readonly type="text" class="form-control" />
+								</div>
+							</div>
+							@if (User.IsInRole(SD.Role_Admin))
+							{
+								<input type="submit" class="btn btn-warning form-control my-1" value="Оновити деталі замовлення" />
+							}
+						</div>
+						<div class="col-12 col-lg-5 offset-lg-1">
+							<h4 class="d-flex justify-content-between align-items-center mb-3">
+								<span class="text-primary">Огляд замовлення</span>
+							</h4>
+							<label class="btn btn-outline-primary form-control my-2">Статус замовлення - @Model.OrderHeader.OrderStatus</label>
+							<ul class="list-group mb-3">
+								@foreach (var detail in Model.OrderDetail)
+								{
+									<li class="list-group-item d-flex justify-content-between p-2">
+										<div class="row container">
+											<div class="col-8">
+
+												<h6 class="my-0 text-primary">@detail.Product.Title</h6>
+												<small class="text-muted">Ціна : @detail.Product.Price.ToString("c")</small><br />
+												<small class="text-muted">Кількість : @detail.Count</small>
+											</div>
+											<div class="col-4 text-end">
+												<p class="text-success">@((detail.Count * detail.Price).ToString("c"))</p>
+											</div>
+										</div>
+									</li>
+								}
+								<li class="list-group-item bg-primary">
+									<div class="row container">
+										<div class="col-6">
+											<h5 class="text-white">ВСЬОГО </h5>
+										</div>
+										<div class="col-6 text-end">
+											<h5 class="text-white">@Model.OrderHeader.OrderTotal.ToString("c")</h5>
+										</div>
+									</div>
+								</li>
+							</ul>
+							<input type="submit" class="btn btn-primary form-control my-1" value="Почати обробку" />
+							<input type="submit" class="btn btn-primary form-control my-1" value="Відправити замовлення" />
+							<input type="submit" class="btn btn-danger form-control my-1" value="Скасувати замовлення" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>

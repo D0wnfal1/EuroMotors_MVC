@@ -1,6 +1,6 @@
 ﻿@model ShoppingCartVM
 
-<form id="form-summary" method="post">
+<form method="post">
 	<br />
 	<div class="container">
 		<div class="card shadow border-0">
@@ -27,7 +27,7 @@
 							</div>
 							<div class="row my-1">
 								<div class="col-3">
-									<label>Ім'я</label>
+									<label>Ім'я<span class="text-danger">*</span></label>
 								</div>
 								<div class="col-9">
 									<input required asp-for="OrderHeader.Name" class="form-control" />
@@ -36,7 +36,7 @@
 							</div>
 							<div class="row my-1">
 								<div class="col-3">
-									<label>Номер Телефону</label>
+									<label>Номер Телефону<span class="text-danger">*</span></label>
 								</div>
 								<div class="col-9">
 									<input required asp-for="OrderHeader.PhoneNumber" class="form-control" />
@@ -83,7 +83,7 @@
 											<h6 class="my-0">@details.Product.Title</h6>
 											<small class="text-muted">Кількість: @details.Count</small>
 										</div>
-										<span class="text-muted">@((details.Price*details.Count).ToString("c")) </span>
+										<span class="text-muted">@((details.Price * details.Count).ToString("c")) </span>
 									</li>
 								}
 								<li class="list-group-item d-flex justify-content-between bg-light">
@@ -102,9 +102,9 @@
 							Орієнтовна дата прибуття: @DateTime.Now.AddDays(2).ToShortDateString() - @DateTime.Now.AddDays(3).ToShortDateString()
 						</p>
 					</div>
-					
+
 					<div class="col-12 col-md-4">
-							<button id="submit-btn" type="submit" value="Place Order" class="btn btn-primary form-control">Зробити Замовлення</button>
+						<button id="submit-btn" type="submit" value="Place Order" class="btn btn-primary form-control">Зробити Замовлення</button>
 					</div>
 				</div>
 			</div>
