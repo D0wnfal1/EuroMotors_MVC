@@ -26,11 +26,11 @@
 						<li class="nav-item">
 							<a class="nav-link" asp-controller="Home" asp-area="Customer" asp-action="Index">Домашня Сторінка</a>
 						</li>
+						<li class="nav-item">
+							<a class="nav-link" asp-controller="Order" asp-area="Admin" asp-action="Index">Управління Замовленням</a>
+						</li>
 						@if (User.IsInRole(SD.Role_Admin))
 						{
-							<li class="nav-item">
-								<a class="nav-link" asp-controller="Order" asp-area="Admin" asp-action="Index">Управління Замовленням</a>
-							</li>
 							<li class="nav-item dropdown">
 								<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 									Управління контентом

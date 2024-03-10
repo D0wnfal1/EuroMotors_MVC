@@ -16,7 +16,6 @@ namespace EuroMotors.Utility
 		public const string StatusInProcess = "Обробка";
 		public const string StatusShipped = "Відправлено";
 		public const string StatusCancelled = "Скасовано";
-		public const string StatusRefunded = "Повернено";
 
 		public const string PaymentStatusPending = "В очікуванні";
 		public const string PaymentStatusApproved = "Затверджено";
