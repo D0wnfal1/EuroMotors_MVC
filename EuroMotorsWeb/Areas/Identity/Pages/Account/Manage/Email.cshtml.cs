@@ -69,7 +69,7 @@ namespace EuroMotorsWeb.Areas.Identity.Pages.Account.Manage
             /// </summary>
             [Required]
             [EmailAddress]
-            [Display(Name = "New email")]
+            [Display(Name = "Нова електронна пошта")]
             public string NewEmail { get; set; }
         }
 
@@ -91,7 +91,7 @@ namespace EuroMotorsWeb.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Не вдалося завантажити користувача з ідентифікатором {_userManager.GetUserId(User)}'.");
             }
 
             await LoadAsync(user);
@@ -103,7 +103,7 @@ namespace EuroMotorsWeb.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Не вдалося завантажити користувача з ідентифікатором'{_userManager.GetUserId(User)}'.");
             }
 
             if (!ModelState.IsValid)
@@ -125,14 +125,14 @@ namespace EuroMotorsWeb.Areas.Identity.Pages.Account.Manage
                     protocol: Request.Scheme);
                 await _emailSender.SendEmailAsync(
                     Input.NewEmail,
-                    "Confirm your email",
-                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    "Підтвердьте свою електронну адресу",
+                    $"Підтвердьте свій обліковий запис, <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>клацнувши тут</a>.");
 
-                StatusMessage = "Confirmation link to change email sent. Please check your email.";
+                StatusMessage = "Надіслано посилання для підтвердження зміни електронної пошти. Будь ласка, перевірте свою електронну пошту.";
                 return RedirectToPage();
             }
 
-            StatusMessage = "Your email is unchanged.";
+            StatusMessage = "Ваша електронна пошта не змінена.";
             return RedirectToPage();
         }
 
@@ -141,7 +141,7 @@ namespace EuroMotorsWeb.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Не вдалося завантажити користувача з ідентифікатором'{_userManager.GetUserId(User)}'.");
             }
 
             if (!ModelState.IsValid)
@@ -161,10 +161,10 @@ namespace EuroMotorsWeb.Areas.Identity.Pages.Account.Manage
                 protocol: Request.Scheme);
             await _emailSender.SendEmailAsync(
                 email,
-                "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                "Підтвердьте свою електронну адресу",
+                $"Підтвердьте свій обліковий запис, <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>клацнувши тут</a>.");
 
-            StatusMessage = "Verification email sent. Please check your email.";
+            StatusMessage = "Електронний лист для підтвердження надіслано. Будь ласка, перевірте свою електронну пошту.";
             return RedirectToPage();
         }
     }

@@ -36,12 +36,12 @@ namespace EuroMotorsWeb.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Не вдалося завантажити користувача з ідентифікатором '{_userManager.GetUserId(User)}'.");
             }
 
             if (!await _userManager.GetTwoFactorEnabledAsync(user))
             {
-                throw new InvalidOperationException($"Cannot disable 2FA for user as it's not currently enabled.");
+                throw new InvalidOperationException($"Неможливо вимкнути 2FA для користувача, оскільки він наразі не ввімкнено.");
             }
 
             return Page();
@@ -52,7 +52,7 @@ namespace EuroMotorsWeb.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Не вдалося завантажити користувача з ідентифікатором '{_userManager.GetUserId(User)}'.");
             }
 
             var disable2faResult = await _userManager.SetTwoFactorEnabledAsync(user, false);
@@ -61,8 +61,8 @@ namespace EuroMotorsWeb.Areas.Identity.Pages.Account.Manage
                 throw new InvalidOperationException($"Unexpected error occurred disabling 2FA.");
             }
 
-            _logger.LogInformation("User with ID '{UserId}' has disabled 2fa.", _userManager.GetUserId(User));
-            StatusMessage = "2fa has been disabled. You can reenable 2fa when you setup an authenticator app";
+            _logger.LogInformation("Під час вимкнення 2FA сталася неочікувана помилка.", _userManager.GetUserId(User));
+            StatusMessage = "2fa вимкнено. Ви можете повторно ввімкнути 2fa під час налаштування програми автентифікації";
             return RedirectToPage("./TwoFactorAuthentication");
         }
     }

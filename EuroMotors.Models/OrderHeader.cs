@@ -26,15 +26,12 @@ namespace EuroMotors.Models
         public DateTime PaymentDate { get; set; }
         public string? Signature { get; set; }
         public string? Data { get; set; }
-        [Required]
-        public string PhoneNumber { get; set; }
-        [Required]
-        public string StreetAddress { get; set; }
-        [Required]
-        public string City { get; set; }
-        [Required]
-        public string PostalCode { get; set; }
-        [Required]
-        public string Name { get; set; }
+		[Required(ErrorMessage = "Поле Номер Телефону є обов'язковим.")]
+		public string? PhoneNumber { get; set; }
+        public string? StreetAddress { get; set; }
+        public string? City { get; set; }
+        public string? PostalCode { get; set; }
+		[Required(ErrorMessage = "Поле Ім'я є обов'язковим.")]
+		public string Name { get; set; }
     }
 }

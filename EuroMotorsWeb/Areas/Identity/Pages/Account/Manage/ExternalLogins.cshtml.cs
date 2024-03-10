@@ -60,7 +60,7 @@ namespace EuroMotorsWeb.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Не вдалося завантажити користувача з ідентифікатором '{_userManager.GetUserId(User)}'.");
             }
 
             CurrentLogins = await _userManager.GetLoginsAsync(user);
@@ -83,18 +83,18 @@ namespace EuroMotorsWeb.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Не вдалося завантажити користувача з ідентифікатором '{_userManager.GetUserId(User)}'.");
             }
 
             var result = await _userManager.RemoveLoginAsync(user, loginProvider, providerKey);
             if (!result.Succeeded)
             {
-                StatusMessage = "The external login was not removed.";
+                StatusMessage = "Зовнішній логін не видалено.";
                 return RedirectToPage();
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "The external login was removed.";
+            StatusMessage = "Зовнішній логін видалено.";
             return RedirectToPage();
         }
 
@@ -114,27 +114,27 @@ namespace EuroMotorsWeb.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Не вдалося завантажити користувача з ідентифікатором '{_userManager.GetUserId(User)}'.");
             }
 
             var userId = await _userManager.GetUserIdAsync(user);
             var info = await _signInManager.GetExternalLoginInfoAsync(userId);
             if (info == null)
             {
-                throw new InvalidOperationException($"Unexpected error occurred loading external login info.");
+                throw new InvalidOperationException($"Під час завантаження зовнішньої інформації для входу сталася неочікувана помилка.");
             }
 
             var result = await _userManager.AddLoginAsync(user, info);
             if (!result.Succeeded)
             {
-                StatusMessage = "The external login was not added. External logins can only be associated with one account.";
+                StatusMessage = "Зовнішній логін не додано. Зовнішні входи можуть бути пов’язані лише з одним обліковим записом.";
                 return RedirectToPage();
             }
 
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-            StatusMessage = "The external login was added.";
+            StatusMessage = "Додано зовнішній логін.";
             return RedirectToPage();
         }
     }

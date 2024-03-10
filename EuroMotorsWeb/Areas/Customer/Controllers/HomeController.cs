@@ -76,18 +76,23 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			byte[] request_data = Convert.FromBase64String(request_dictionary["data"]);
 			string decodedString = Encoding.UTF8.GetString(request_data);
 			var request_data_dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(decodedString);
-			var mySignature = Convert.ToBase64String(SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes("sandbox_Qu3XYSm6NF91gKyXWRFMPiHrXY2aX274vvs6Vo8e" + request_dictionary["data"] + "sandbox_Qu3XYSm6NF91gKyXWRFMPiHrXY2aX274vvs6Vo8e")));
+			var mySignature = Convert.ToBase64String(SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes(_configuration["LiqPaySettings:PrivateKey"] + request_dictionary["data"] + _configuration["LiqPaySettings:PrivateKey"])));
 			if (mySignature != request_dictionary["signature"])
+			{
+				TempData["success"] = "Оплата не була здійснена!";
 				return RedirectToAction(nameof(Index));
+			}
 			if (request_data_dictionary["status"] == "success")
 			{
 				OrderHeader orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == Convert.ToInt32(request_data_dictionary["order_id"]), includeProperties: "ApplicationUser");
 				_unitOfWork.OrderHeader.UpdateStatus(Convert.ToInt32(request_data_dictionary["order_id"]), SD.StatusApproved, SD.PaymentStatusApproved);
+				TempData["success"] = "Оплата Пройшла Успішно!";
 				_unitOfWork.Save();
 				return RedirectToAction(nameof(Index));
 			}
 			else
 			{
+				TempData["success"] = "Оплата не була здійснена!";
 				return RedirectToAction(nameof(Index));
 			}
 		}
