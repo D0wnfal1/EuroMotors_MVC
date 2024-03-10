@@ -79,10 +79,10 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			var mySignature = Convert.ToBase64String(SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes(_configuration["LiqPaySettings:PrivateKey"] + request_dictionary["data"] + _configuration["LiqPaySettings:PrivateKey"])));
 			if (mySignature != request_dictionary["signature"])
 			{
-				TempData["success"] = "Оплата не була здійснена!";
+				TempData["error"] = "Оплата не була здійснена!";
 				return RedirectToAction(nameof(Index));
 			}
-			if (request_data_dictionary["status"] == "success")
+			if (request_data_dictionary["status"] == "sandbox" || request_data_dictionary["status"] == "success")
 			{
 				OrderHeader orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == Convert.ToInt32(request_data_dictionary["order_id"]), includeProperties: "ApplicationUser");
 				_unitOfWork.OrderHeader.UpdateStatus(Convert.ToInt32(request_data_dictionary["order_id"]), SD.StatusApproved, SD.PaymentStatusApproved);
@@ -92,7 +92,7 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			}
 			else
 			{
-				TempData["success"] = "Оплата не була здійснена!";
+				TempData["error"] = "Оплата не була здійснена!";
 				return RedirectToAction(nameof(Index));
 			}
 		}

@@ -8,13 +8,13 @@ namespace EuroMotors.Utility
 {
 	public static class SD
 	{
-		public const string Role_Customer = "Замовник";
-		public const string Role_Admin = "Адмін";
+		public const string Role_Customer = "Customer";
+		public const string Role_Admin = "Admin";
 
 		public const string StatusPending = "В очікуванні";
 		public const string StatusApproved = "Затверджено";
-		public const string StatusInProcess = "Processing";
-		public const string StatusShipped = "Обробка";
+		public const string StatusInProcess = "Обробка";
+		public const string StatusShipped = "Відправлено";
 		public const string StatusCancelled = "Скасовано";
 		public const string StatusRefunded = "Повернено";
 

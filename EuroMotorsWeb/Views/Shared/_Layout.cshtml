@@ -28,26 +28,29 @@
 						</li>
 						@if (User.IsInRole(SD.Role_Admin))
 						{
-						<li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-								Управління контентом
-							</a>
-							<ul class="dropdown-menu">
-								<li class="nav-item">
-									<a class="dropdown-item" asp-controller="Category" asp-area="Admin" asp-action="Index">Категорії</a>
-								</li>
-								<li class="nav-item">
-									<a class="dropdown-item" asp-controller="CarModel" asp-area="Admin" asp-action="Index">Моделі Авто</a>
-								</li>
-								<li class="nav-item">
-									<a class="dropdown-item" asp-controller="Product" asp-area="Admin" asp-action="Index">Товари</a>
-								</li>
-							</ul>
-						</li>
+							<li class="nav-item">
+								<a class="nav-link" asp-controller="Order" asp-area="Admin" asp-action="Index">Управління Замовленням</a>
+							</li>
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+									Управління контентом
+								</a>
+								<ul class="dropdown-menu">
+									<li class="nav-item">
+										<a class="dropdown-item" asp-controller="Category" asp-area="Admin" asp-action="Index">Категорії</a>
+									</li>
+									<li class="nav-item">
+										<a class="dropdown-item" asp-controller="CarModel" asp-area="Admin" asp-action="Index">Моделі Авто</a>
+									</li>
+									<li class="nav-item">
+										<a class="dropdown-item" asp-controller="Product" asp-area="Admin" asp-action="Index">Товари</a>
+									</li>
+								</ul>
+							</li>
 						}
 						<li class="nav-item">
 							<a class="nav-link" asp-controller="Cart" asp-area="Customer" asp-action="Index">
-								<i class="bi bi-cart"></i> 
+								<i class="bi bi-cart"></i>
 							</a>
 						</li>
 					</ul>
@@ -55,7 +58,7 @@
 				</div>
 			</div>
 		</nav>
-		
+
 	</header>
 	<div class="container">
 		<main role="main" class="">
@@ -75,7 +78,6 @@
 	<script src="//cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js" asp-append-version="true"></script>
 	<script src="https://cdn.tiny.cloud/1/qw5owmlsyjspe8pmvopnehmy3jbgdokl6pug19ife2fujw97/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-	<script src="//cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js" asp-append-version="true"></script>
 	@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
