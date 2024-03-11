@@ -20,5 +20,7 @@ namespace EuroMotors.Utility
 		public const string PaymentStatusPending = "В очікуванні";
 		public const string PaymentStatusApproved = "Затверджено";
 		public const string PaymentStatusRejected = "Скасовано";
+
+		public const string SessionCart = "SessionShoppingCart";
 	}
 }

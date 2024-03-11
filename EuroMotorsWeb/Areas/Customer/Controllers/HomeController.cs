@@ -30,6 +30,13 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 
 		public IActionResult Index()
 		{
+			var claimsIdentity = (ClaimsIdentity)User.Identity;
+			var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+			if (claim != null)
+			{
+				HttpContext.Session.SetInt32(SD.SessionCart,
+				_unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == claim.Value).Count());
+			}
 			IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperties: "Category,CarModel");
 			return View(productList);
 		}
@@ -58,14 +65,16 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			if (cartFromb != null)
 			{
 				cartFromb.Count += shoppingCart.Count;
-				_unitOfWork.ShoppingCart.Update(cartFromb);
+				_unitOfWork.Save();
 			}
 			else
 			{
 				_unitOfWork.ShoppingCart.Add(shoppingCart);
+				_unitOfWork.Save();
+				HttpContext.Session.SetInt32(SD.SessionCart,
+				_unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId).Count());
 			}
 			TempData["success"] = "Кошик успішно оновлений!";
-			_unitOfWork.Save();
 
 			return RedirectToAction(nameof(Index));
 		}
