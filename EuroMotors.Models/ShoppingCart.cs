@@ -22,8 +22,8 @@ namespace EuroMotors.Models
         [ForeignKey("ApplicationUserId")]
         [ValidateNever]
         public ApplicationUser? ApplicationUser { get; set; }
-
-        [NotMapped]
+		public string? GuestId { get; set; }
+		[NotMapped]
         public double Price { get; set; }
     }
 }

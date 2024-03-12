@@ -18,7 +18,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace EuroMotorsWeb.Areas.Customer.Controllers
 {
 	[Area("Customer")]
-	[Authorize]
+	//[Authorize]
 	public class CartController : Controller
 	{
 		private readonly IUnitOfWork _unitOfWork;
@@ -33,13 +33,30 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 		public IActionResult Index()
 		{
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
-			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-			ShoppingCartVM = new()
+			string userId = "";
+			if (claimsIdentity.IsAuthenticated)
 			{
-				ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product"),
-				OrderHeader = new()
-			};
+				userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+				ShoppingCartVM = new()
+				{
+					ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product"),
+					OrderHeader = new()
+				};
+			}
+			else
+			{
+				userId = HttpContext.Session.GetString("SessionId");
+				if (string.IsNullOrEmpty(userId))
+				{
+					userId = Guid.NewGuid().ToString();
+					HttpContext.Session.SetString("SessionId", userId);
+				}
+				ShoppingCartVM = new()
+				{
+					ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.GuestId == userId, includeProperties: "Product"),
+					OrderHeader = new()
+				};
+			}
 
 			foreach (var cart in ShoppingCartVM.ShoppingCartList)
 			{
@@ -53,21 +70,37 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 		public IActionResult Summary()
 		{
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
-			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-			ShoppingCartVM = new()
+			string userId = "";
+			if (claimsIdentity.IsAuthenticated)
 			{
-				ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product"),
-				OrderHeader = new()
-			};
+				userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+				ShoppingCartVM = new()
+				{
+					ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product"),
+					OrderHeader = new()
+				};
+				ShoppingCartVM.OrderHeader.ApplicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == userId);
 
-			ShoppingCartVM.OrderHeader.ApplicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == userId);
-
-			ShoppingCartVM.OrderHeader.Name = ShoppingCartVM.OrderHeader.ApplicationUser.Name;
-			ShoppingCartVM.OrderHeader.PhoneNumber = ShoppingCartVM.OrderHeader.ApplicationUser.PhoneNumber;
-			ShoppingCartVM.OrderHeader.StreetAddress = ShoppingCartVM.OrderHeader.ApplicationUser.StreetAdress;
-			ShoppingCartVM.OrderHeader.City = ShoppingCartVM.OrderHeader.ApplicationUser.City;
-			ShoppingCartVM.OrderHeader.PostalCode = ShoppingCartVM.OrderHeader.ApplicationUser.PostalCode;
+				ShoppingCartVM.OrderHeader.Name = ShoppingCartVM.OrderHeader.ApplicationUser.Name;
+				ShoppingCartVM.OrderHeader.PhoneNumber = ShoppingCartVM.OrderHeader.ApplicationUser.PhoneNumber;
+				ShoppingCartVM.OrderHeader.StreetAddress = ShoppingCartVM.OrderHeader.ApplicationUser.StreetAdress;
+				ShoppingCartVM.OrderHeader.City = ShoppingCartVM.OrderHeader.ApplicationUser.City;
+				ShoppingCartVM.OrderHeader.PostalCode = ShoppingCartVM.OrderHeader.ApplicationUser.PostalCode;
+			}
+			else
+			{
+				userId = HttpContext.Session.GetString("SessionId");
+				if (string.IsNullOrEmpty(userId))
+				{
+					userId = Guid.NewGuid().ToString();
+					HttpContext.Session.SetString("SessionId", userId);
+				}
+				ShoppingCartVM = new()
+				{
+					ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.GuestId == userId, includeProperties: "Product"),
+					OrderHeader = new()
+				};
+			}
 
 			foreach (var cart in ShoppingCartVM.ShoppingCartList)
 			{
@@ -81,11 +114,26 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 		public IActionResult SummaryPOST()
 		{
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
-			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
-			ShoppingCartVM.ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product");
-			ShoppingCartVM.OrderHeader.OrderDate = DateTime.Now;
-			ShoppingCartVM.OrderHeader.ApplicationUserId = userId;
-
+			string userId = "";
+			if (claimsIdentity.IsAuthenticated)
+			{
+				userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+				ShoppingCartVM.ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product");
+				ShoppingCartVM.OrderHeader.OrderDate = DateTime.Now;
+				ShoppingCartVM.OrderHeader.ApplicationUserId = userId;
+			}
+			else
+			{
+				userId = HttpContext.Session.GetString("SessionId");
+				if (string.IsNullOrEmpty(userId))
+				{
+					userId = Guid.NewGuid().ToString();
+					HttpContext.Session.SetString("SessionId", userId);
+				}
+				ShoppingCartVM.ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.GuestId == userId, includeProperties: "Product");
+				ShoppingCartVM.OrderHeader.OrderDate = DateTime.Now;
+				ShoppingCartVM.OrderHeader.GuestId = userId;
+			}
 			foreach (var cart in ShoppingCartVM.ShoppingCartList)
 			{
 				cart.Price = cart.Product.Price;
@@ -113,16 +161,39 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 		public IActionResult OrderConfirmation(int id)
 		{
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
-			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-			ShoppingCartVM = new()
+			string userId = "";
+			if (claimsIdentity.IsAuthenticated)
 			{
-				ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product"),
-				OrderHeader = new()
+				userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+			}
+			else
+			{
+				userId = HttpContext.Session.GetString("SessionId");
+				if (string.IsNullOrEmpty(userId))
+				{
+					userId = Guid.NewGuid().ToString();
+					HttpContext.Session.SetString("SessionId", userId);
+				}
+			}
+
+			// Инициализация ShoppingCartVM
+			ShoppingCartVM = new ShoppingCartVM
+			{
+				OrderHeader = new OrderHeader()
 			};
 
-			ShoppingCartVM.OrderHeader.OrderDate = DateTime.Now;
-			ShoppingCartVM.OrderHeader.ApplicationUserId = userId;
+			if (claimsIdentity.IsAuthenticated)
+			{
+				ShoppingCartVM.ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product");
+				ShoppingCartVM.OrderHeader.OrderDate = DateTime.Now;
+				ShoppingCartVM.OrderHeader.ApplicationUserId = userId;
+			}
+			else
+			{
+				ShoppingCartVM.ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.GuestId == userId, includeProperties: "Product");
+				ShoppingCartVM.OrderHeader.OrderDate = DateTime.Now;
+				ShoppingCartVM.OrderHeader.GuestId = userId;
+			}
 
 			foreach (var cart in ShoppingCartVM.ShoppingCartList)
 			{
@@ -130,7 +201,15 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 				ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
 			}
 			ShoppingCartVM.OrderHeader.Id = id;
-			OrderHeader orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == id, includeProperties: "ApplicationUser");
+			OrderHeader orderHeader;
+			if (claimsIdentity.IsAuthenticated)
+			{
+				orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == id, includeProperties: "ApplicationUser");
+			}
+			else
+			{
+				orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == id);
+			}
 			var domain = "https://localhost:7159/";
 			var paymentRequest = new LiqPayRequest
 			{
@@ -158,7 +237,15 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			ShoppingCartVM.OrderHeader.Signature = signature_hash;
 			_unitOfWork.OrderHeader.UpdateLiqPayPaymentID(id, ShoppingCartVM.OrderHeader.Signature, ShoppingCartVM.OrderHeader.Data);
 			_unitOfWork.Save();
-			List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
+			List<ShoppingCart> shoppingCarts;
+			if (claimsIdentity.IsAuthenticated)
+			{
+				shoppingCarts = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
+			}
+			else
+			{
+				shoppingCarts = _unitOfWork.ShoppingCart.GetAll(u => u.GuestId == orderHeader.GuestId).ToList();
+			}
 			_unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
 			_unitOfWork.Save();
 

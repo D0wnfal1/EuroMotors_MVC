@@ -46,14 +46,31 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			return View(cart);
 		}
 		[HttpPost]
-		[Authorize]
+		//[Authorize]
 		public IActionResult Details(ShoppingCart shoppingCart)
 		{
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
-			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
-			shoppingCart.ApplicationUserId = userId;
-			ShoppingCart cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.ApplicationUserId == userId &&
-			u.ProductId == shoppingCart.ProductId);
+			string userId = "";
+			ShoppingCart cartFromDb;
+			if (claimsIdentity.IsAuthenticated)
+			{
+				userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+				shoppingCart.ApplicationUserId = userId;
+				 cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.ApplicationUserId == userId &&
+				u.ProductId == shoppingCart.ProductId);
+			}
+			else
+			{
+				userId = HttpContext.Session.GetString("SessionId");
+				if (string.IsNullOrEmpty(userId))
+				{
+					userId = Guid.NewGuid().ToString();
+					HttpContext.Session.SetString("SessionId", userId);
+				}
+				shoppingCart.GuestId = userId;
+				 cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.GuestId == userId &&
+				u.ProductId == shoppingCart.ProductId);
+			}
 
 			if (cartFromDb != null)
 			{

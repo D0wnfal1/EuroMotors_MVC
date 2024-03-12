@@ -24,24 +24,25 @@ $(document).ready(function () {
     }
 });
 
-function loadDataTable(status) {
+function loadDataTable() {
     dataTable = $('#tblData').DataTable({
-        "ajax": { url: '/admin/order/getall?status=' + status},
+        "ajax": { url: '/admin/order/getall' },
         "columns": [
-            { data: 'id', "width": "5%" },
-            { data: 'name', "width": "20%" },
-            { data: 'phoneNumber', "width": "20%" },
-            { data: 'applicationUser.email', "width": "20%" },
+            { data: 'id', "width": "35%" },
+            { data: 'name', "width": "10%" },
+            { data: 'phoneNumber', "width": "10%" },
+            { data: 'applicationUser.email', defaultContent: '-', "width": "15%" },
             { data: 'orderStatus', "width": "10%" },
             { data: 'orderTotal', "width": "10%" },
             {
                 data: 'id',
                 "render": function (data) {
-                    return `<div class="w-100 btn-group" role="group">
-                     <a href="/admin/order/details?orderId=${data}" class="btn btn-primary p-1 mx-1"> <i class="bi bi-pencil-square"></i></a>               
+                    return `<div class="w-75 btn-group" role="group">
+                     <a href="/admin/order/details?orderId=${data}" class="btn btn-primary mx-2"> <i class="bi bi-pencil-square"></i></a>               
+                    
                     </div>`
                 },
-                "width": "10%"
+                "width": "25%"
             }
         ]
     });
