@@ -18,10 +18,10 @@ namespace EuroMotors.Models
         public Product Product { get; set; }
         [Range(1, 1000, ErrorMessage = "Будь ласка, введіть занчення від 1 до 1000!")]
         public int Count { get; set; }
-        public string ApplicationUserId { get; set; }
+        public string? ApplicationUserId { get; set; }
         [ForeignKey("ApplicationUserId")]
         [ValidateNever]
-        public ApplicationUser ApplicationUser { get; set; }
+        public ApplicationUser? ApplicationUser { get; set; }
 
         [NotMapped]
         public double Price { get; set; }

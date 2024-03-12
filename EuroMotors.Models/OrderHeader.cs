@@ -12,10 +12,10 @@ namespace EuroMotors.Models
     public class OrderHeader
     {
         public int Id { get; set; }
-        public string ApplicationUserId { get; set; }
+        public string? ApplicationUserId { get; set; }
         [ForeignKey("ApplicationUserId")]
         [ValidateNever]
-        public ApplicationUser ApplicationUser { get; set; }
+        public ApplicationUser? ApplicationUser { get; set; }
         public DateTime OrderDate { get; set; }
         public DateTime ShippingDate { get; set; }
         public double OrderTotal { get; set; }
@@ -28,9 +28,12 @@ namespace EuroMotors.Models
         public string? Data { get; set; }
 		[Required(ErrorMessage = "Поле Номер Телефону є обов'язковим.")]
 		public string? PhoneNumber { get; set; }
-        public string? StreetAddress { get; set; }
-        public string? City { get; set; }
-        public string? PostalCode { get; set; }
+		[Required(ErrorMessage = "Поле Адрес Відправки є обов'язковим.")]
+		public string? StreetAddress { get; set; }
+		[Required(ErrorMessage = "Поле Місто є обов'язковим.")]
+		public string? City { get; set; }
+		[Required(ErrorMessage = "Поле Поштовий Індекс є обов'язковим.")]
+		public string? PostalCode { get; set; }
 		[Required(ErrorMessage = "Поле Ім'я є обов'язковим.")]
 		public string Name { get; set; }
     }

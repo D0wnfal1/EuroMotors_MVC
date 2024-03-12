@@ -1,5 +1,4 @@
 ﻿@model ShoppingCartVM
-
 <form method="post">
 	<br />
 	<div class="container">
@@ -45,28 +44,28 @@
 							</div>
 							<div class="row my-1">
 								<div class="col-3">
-									<label>Адрес Відправки</label>
+									<label>Адрес Відправки<span class="text-danger">*</span></label>
 								</div>
 								<div class="col-9">
-									<input asp-for="OrderHeader.StreetAddress" class="form-control" />
+									<input required asp-for="OrderHeader.StreetAddress" class="form-control" />
 									<span asp-validation-for="OrderHeader.StreetAddress" class="text-danger"></span>
 								</div>
 							</div>
 							<div class="row my-1">
 								<div class="col-3">
-									<label>Місто</label>
+									<label>Місто<span class="text-danger">*</span></label>
 								</div>
 								<div class="col-9">
-									<input asp-for="OrderHeader.City" class="form-control" />
+									<input required asp-for="OrderHeader.City" class="form-control" />
 									<span asp-validation-for="OrderHeader.City" class="text-danger"></span>
 								</div>
 							</div>
 							<div class="row my-1">
 								<div class="col-3">
-									<label>Поштовий Індекс</label>
+									<label>Поштовий Індекс<span class="text-danger">*</span></label>
 								</div>
 								<div class="col-9">
-									<input asp-for="OrderHeader.PostalCode" class="form-control" />
+									<input required asp-for="OrderHeader.PostalCode" class="form-control" />
 									<span asp-validation-for="OrderHeader.PostalCode" class="text-danger"></span>
 								</div>
 							</div>
