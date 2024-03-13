@@ -2,18 +2,13 @@
 using EuroMotors.Models;
 using EuroMotors.Models.ViewModels;
 using EuroMotors.Utility;
-using LiqPay.SDK;
 using LiqPay.SDK.Dto;
 using LiqPay.SDK.Dto.Enums;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using static System.Net.WebRequestMethods;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EuroMotorsWeb.Areas.Customer.Controllers
 {
@@ -176,7 +171,6 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 				}
 			}
 
-			// Инициализация ShoppingCartVM
 			ShoppingCartVM = new ShoppingCartVM
 			{
 				OrderHeader = new OrderHeader()

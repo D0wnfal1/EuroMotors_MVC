@@ -5,7 +5,6 @@ using EuroMotors.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Stripe;
 using System.Security.Claims;
 
 namespace EuroMotorsWeb.Areas.Admin.Controllers

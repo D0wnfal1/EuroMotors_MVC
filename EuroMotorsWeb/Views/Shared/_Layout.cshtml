@@ -46,6 +46,10 @@
 									<li class="nav-item">
 										<a class="dropdown-item" asp-controller="Product" asp-area="Admin" asp-action="Index">Товари</a>
 									</li>
+									<li><hr class="dropdown-divider"/></li>
+									<li class="nav-item">
+										<a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">Створити Аккаунт</a>
+									</li>
 								</ul>
 							</li>
 						}
@@ -76,7 +80,7 @@
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
-	<script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
+	<script src="https://cdn.datatables.net/2.0.2/js/dataTables.js" asp-append-version="true"></script>
 	<script src="https://cdn.tiny.cloud/1/qw5owmlsyjspe8pmvopnehmy3jbgdokl6pug19ife2fujw97/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	@await RenderSectionAsync("Scripts", required: false)
