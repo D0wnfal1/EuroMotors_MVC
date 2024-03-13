@@ -45,6 +45,6 @@ namespace EuroMotors.Models
 		[ValidateNever]
 		public CarModel CarModel { get; set; }
 		[ValidateNever]
-		public string ImageUrl { get; set; }
+		public List<ProductImage> ProductImages { get; set; }
     }
 }

@@ -2,7 +2,7 @@
 
 <form method="post" class="" enctype="multipart/form-data">
 	<input asp-for="Product.Id" hidden />
-	<input asp-for="Product.ImageUrl" hidden />
+	@* <input asp-for="Product.ImageUrl" hidden /> *@
 	<div class="row">
 		<div class="col-10">
 			<div class="border border-primary p-3 mt-4">
@@ -54,7 +54,7 @@
 
 
 				<div class="mb-3 p-1">
-					<input type="file" name="file" class=" p-0"></input>
+					<input type="file" name="files" class="form-control border-0 shadow" multiple />
 				</div>
 				<div class="row">
 					<div class="col-6 col-md-3">
@@ -76,7 +76,19 @@
 			</div>
 		</div>
 		<div class="col-2">
-			<img src="@Model.Product.ImageUrl" width="200%" style="border-radius:5px; border:1px solid #fff"
+			@if (Model.Product.ProductImages != null)
+			{
+				foreach (var image in Model.Product.ProductImages)
+				{
+					<div class="border p-1 m-2 text-center">
+						<img src="@image.ImageUrl" width="100%"
+							 style="border-radius:5px; border:1px solid #bbb9b9" />
+						<a asp-action="DeleteImage" class="btn btn-danger m-2" asp-route-imageId="@image.Id">
+							<i class="bi bi-trash-fill "></i> Видалити
+						</a>
+					</div>
+				}
+			}
 		</div>
 	</div>
 

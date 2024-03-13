@@ -16,6 +16,7 @@ namespace EuroMotors.DataAccess.Data
 		public DbSet<CarModel> CarModels { get; set; }
 		public DbSet<Product> Products { get; set; }
 		public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+		public DbSet<ProductImage> ProductImages { get; set; }
 		public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 		public DbSet<OrderHeader> OrderHeaders { get; set; }
 		public DbSet<OrderDetail> OrderDetails { get; set; }
@@ -53,7 +54,6 @@ namespace EuroMotors.DataAccess.Data
 					Price = 140,
 					CategoryId = 1,
 					CarModelId = 1,
-					ImageUrl = ""
 				},
 				new Product
 				{
@@ -68,7 +68,6 @@ namespace EuroMotors.DataAccess.Data
 					Price = 600,
 					CategoryId = 2,
 					CarModelId = 2,
-					ImageUrl = ""
 				},
 				new Product
 				{
@@ -84,7 +83,6 @@ namespace EuroMotors.DataAccess.Data
 					Price = 4147,
 					CategoryId = 3,
 					CarModelId = 3,
-					ImageUrl = ""
 				},
 				new Product
 				{
@@ -96,7 +94,6 @@ namespace EuroMotors.DataAccess.Data
 					ListPrice = 507,
 					Price = 500,
 					CategoryId = 3,
-					ImageUrl = ""
 				}
 				);
 		}
