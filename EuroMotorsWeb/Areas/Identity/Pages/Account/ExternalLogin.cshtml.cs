@@ -17,6 +17,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel;
+using EuroMotors.Models;
 
 namespace EuroMotorsWeb.Areas.Identity.Pages.Account
 {
@@ -83,8 +85,20 @@ namespace EuroMotorsWeb.Areas.Identity.Pages.Account
             /// </summary>
             [Required]
             [EmailAddress]
+            [DisplayName("Електронна Пошта")]
             public string Email { get; set; }
-        }
+			[Required]
+            [DisplayName("Ім'я")]
+            public string? Name { get; set; }
+            [DisplayName("Адреса вулиці")]
+            public string? StreetAdress { get; set; }
+            [DisplayName("Місто")]
+            public string? City { get; set; }
+            [DisplayName("Поштовий індекс")]
+            public string? PostalCode { get; set; }
+            [DisplayName("Номер телефону")]
+            public string? PhoneNumber { get; set; }
+		}
         
         public IActionResult OnGet() => RedirectToPage("./Login");
 
@@ -131,7 +145,8 @@ namespace EuroMotorsWeb.Areas.Identity.Pages.Account
                 {
                     Input = new InputModel
                     {
-                        Email = info.Principal.FindFirstValue(ClaimTypes.Email)
+                        Email = info.Principal.FindFirstValue(ClaimTypes.Email),
+                        Name = info.Principal.FindFirstValue(ClaimTypes.Name),
                     };
                 }
                 return Page();
@@ -155,8 +170,13 @@ namespace EuroMotorsWeb.Areas.Identity.Pages.Account
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+				user.StreetAdress = Input.StreetAdress;
+				user.City = Input.City;
+				user.PostalCode = Input.PostalCode;
+				user.Name = Input.Name;
+				user.PhoneNumber = Input.PhoneNumber;
 
-                var result = await _userManager.CreateAsync(user);
+				var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user, info);
@@ -197,11 +217,11 @@ namespace EuroMotorsWeb.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private IdentityUser CreateUser()
+        private ApplicationUser CreateUser()
         {
             try
             {
-                return Activator.CreateInstance<IdentityUser>();
+                return Activator.CreateInstance<ApplicationUser>();
             }
             catch
             {

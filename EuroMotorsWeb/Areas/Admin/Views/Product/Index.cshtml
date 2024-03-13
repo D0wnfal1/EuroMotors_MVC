@@ -1,17 +1,19 @@
 ﻿@model List<Product>
-<div class="container">
-	<div class="row pt-4 pb-3">
-		<div class="col-6">
-			<h1 class="text-primary">
-				Список Товарів
-			</h1>
+<div class="card shadow border-0 my-4 p-2">
+	<div class="card-header bg-primary ml-0 py-3">
+		<div class="row">
+			<div class="col-12 text-center">
+				<h1 class="text-white">
+					Список Товарів
+				</h1>
+			</div>
 		</div>
-		<div class="col-6 text-end">
-			<a asp-controller="Product" asp-action="Upsert" class="btn btn-primary fs-4">
+	</div>
+	<div class="text-end pt-2 p-2">
+			<a asp-controller="Product" asp-action="Upsert" class="btn btn-primary fs-4 ">
 				<i class="bi bi-plus-square-fill"></i> Створити Нову Категорію
 			</a>
 		</div>
-	</div>
 	<table id="tblData" class="table table-bordered table-striped" style="width:100%">
 		<thead class="border-2 ">
 			<tr>

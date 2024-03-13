@@ -24,13 +24,14 @@ $(document).ready(function () {
     }
 });
 
-function loadDataTable() {
+function loadDataTable(status) {
     dataTable = $('#tblData').DataTable({
-        "ajax": { url: '/admin/order/getall' },
+        "ajax": {
+            url: '/admin/order/getall?status=' + status},
         "columns": [
-            { data: 'id', "width": "35%" },
+            { data: 'id', "width": "4%" },
             { data: 'name', "width": "10%" },
-            { data: 'phoneNumber', "width": "10%" },
+            { data: 'phoneNumber', "width": "15%" },
             { data: 'applicationUser.email', defaultContent: '-', "width": "15%" },
             { data: 'orderStatus', "width": "10%" },
             { data: 'orderTotal', "width": "10%" },
@@ -42,7 +43,7 @@ function loadDataTable() {
                     
                     </div>`
                 },
-                "width": "25%"
+                "width": "15%"
             }
         ]
     });

@@ -82,16 +82,11 @@ namespace EuroMotorsWeb.Areas.Identity.Pages.Account
 
 			[ValidateNever]
 			public IEnumerable<SelectListItem> RoleList { get; set; }
-
-			[Display(Name = "Ім'я")]
+			[Required]
 			public string? Name { get; set; }
-
 			public string? StreetAdress { get; set; }
 			public string? City { get; set; }
 			public string? PostalCode { get; set; }
-
-			[DataType(DataType.PhoneNumber)]
-			[Display(Name = "Номер телефону")]
 			public string? PhoneNumber { get; set; }
 		}
 
@@ -135,6 +130,7 @@ namespace EuroMotorsWeb.Areas.Identity.Pages.Account
 
 				if (result.Succeeded)
 				{
+					await _userManager.AddToRoleAsync(user,SD.Role_Customer);
 					_logger.LogInformation("Користувач створив новий обліковий запис з паролем.");
 
 					if (!String.IsNullOrEmpty(Input.Role))
