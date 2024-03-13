@@ -30,7 +30,7 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 
 		public IActionResult Index()
 		{
-			IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperties: "Category,CarModel");
+			IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperties: "Category,CarModel,ProductImages");
 			return View(productList);
 		}
 
@@ -38,7 +38,7 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 		{
 			ShoppingCart cart = new()
 			{
-				Product = _unitOfWork.Product.Get(u => u.Id == productId, includeProperties: "Category,CarModel"),
+				Product = _unitOfWork.Product.Get(u => u.Id == productId, includeProperties: "Category,CarModel,ProductImages"),
 				Count = 1,
 				ProductId = productId
 			};
