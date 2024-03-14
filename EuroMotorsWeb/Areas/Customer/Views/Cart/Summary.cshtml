@@ -44,29 +44,34 @@
 							</div>
 							<div class="row my-1">
 								<div class="col-3">
-									<label>Адрес Відправки<span class="text-danger">*</span></label>
+									<label>Місто</label>
 								</div>
 								<div class="col-9">
-									<input required asp-for="OrderHeader.StreetAddress" class="form-control" />
-									<span asp-validation-for="OrderHeader.StreetAddress" class="text-danger"></span>
-								</div>
-							</div>
-							<div class="row my-1">
-								<div class="col-3">
-									<label>Місто<span class="text-danger">*</span></label>
-								</div>
-								<div class="col-9">
-									<input required asp-for="OrderHeader.City" class="form-control" />
+									<div class="form-group">
+										<select class="form-control" id="city" name="city">
+											<option value="">-- Виберіть Місто --</option>
+											@foreach (var city in Model.Cities)
+											{
+												<option value="@city">@city</option>
+											}
+										</select>
+									</div>
+									<input hidden asp-for="OrderHeader.City" id="selectedCity" class="form-control" />
 									<span asp-validation-for="OrderHeader.City" class="text-danger"></span>
 								</div>
 							</div>
 							<div class="row my-1">
 								<div class="col-3">
-									<label>Поштовий Індекс<span class="text-danger">*</span></label>
+									<label>Відділення Нової Пошти</label>
 								</div>
 								<div class="col-9">
-									<input required asp-for="OrderHeader.PostalCode" class="form-control" />
-									<span asp-validation-for="OrderHeader.PostalCode" class="text-danger"></span>
+									<input hidden asp-for="OrderHeader.Warehouse" id="selectedWarehouse" class="form-control" />
+									<span asp-validation-for="OrderHeader.Warehouse" class="text-danger"></span>
+									<div class="form-group" id="warehouseDropdown" style="display:none;">
+										<select class="form-control" id="warehouse" name="warehouse">
+											<option value="">-- Виберіть Відделення --</option>
+										</select>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -110,3 +115,35 @@
 		</div>
 	</div>
 </form>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+	$(document).ready(function () {
+		$('#city').change(function () {
+			var selectedCity = $(this).val();
+			$('#selectedCity').val(selectedCity);
+			var cityName = $(this).val();
+			if (cityName !== "") {
+				$.ajax({
+					url: '@Url.Action("GetWarehousesByCityName", "Cart")',
+					type: 'GET',
+					data: { cityName: cityName },
+					success: function (response) {
+						var warehousesDropdown = $('#warehouse');
+						warehousesDropdown.empty();
+						warehousesDropdown.append($('<option>').text('-- Select Warehouse --').val(''));
+						$.each(response, function (index, warehouse) {
+							warehousesDropdown.append($('<option>').text(warehouse).val(warehouse));
+						});
+						$('#warehouseDropdown').show();
+					},
+				});
+			} else {
+				$('#warehouseDropdown').hide();
+			}
+		});
+		$('#warehouse').change(function () {
+			var selectedWarehouse = $(this).val();
+			$('#selectedWarehouse').val(selectedWarehouse);
+		});
+	});
+</script>

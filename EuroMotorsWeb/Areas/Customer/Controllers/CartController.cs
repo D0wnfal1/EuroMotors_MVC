@@ -6,6 +6,7 @@ using LiqPay.SDK.Dto;
 using LiqPay.SDK.Dto.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using NovaPoshtaApi;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -18,13 +19,15 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 	{
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly IConfiguration _configuration;
-		[BindProperty]
+        private readonly NovaPoshtaClient _novaPoshtaClient;
+        [BindProperty]
 		public ShoppingCartVM ShoppingCartVM { get; set; }
-		public CartController(IUnitOfWork unitOfWork, IConfiguration configuration)
+		public CartController(IUnitOfWork unitOfWork, IConfiguration configuration, NovaPoshtaClient novaPoshtaClient)
 		{
 			_unitOfWork = unitOfWork;
 			_configuration = configuration;
-		}
+            _novaPoshtaClient = novaPoshtaClient;
+        }
 		public IActionResult Index()
 		{
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
@@ -69,23 +72,28 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			string userId = "";
 			if (claimsIdentity.IsAuthenticated)
 			{
-				userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var citiesResponse = _novaPoshtaClient.Address.GetCities().GetAwaiter().GetResult();
+                var cities = citiesResponse?.Select(c => c.Description);
+                userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 				ShoppingCartVM = new()
 				{
 					ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product"),
-					OrderHeader = new()
-				};
+					OrderHeader = new(),
+                    Cities = cities
+                };
 				ShoppingCartVM.OrderHeader.ApplicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == userId);
 
 				ShoppingCartVM.OrderHeader.Name = ShoppingCartVM.OrderHeader.ApplicationUser.Name;
 				ShoppingCartVM.OrderHeader.PhoneNumber = ShoppingCartVM.OrderHeader.ApplicationUser.PhoneNumber;
-				ShoppingCartVM.OrderHeader.StreetAddress = ShoppingCartVM.OrderHeader.ApplicationUser.StreetAdress;
-				ShoppingCartVM.OrderHeader.City = ShoppingCartVM.OrderHeader.ApplicationUser.City;
-				ShoppingCartVM.OrderHeader.PostalCode = ShoppingCartVM.OrderHeader.ApplicationUser.PostalCode;
+				//ShoppingCartVM.OrderHeader.City = ShoppingCartVM.OrderHeader.ApplicationUser.City;
+				//ShoppingCartVM.OrderHeader.Warehouse = ShoppingCartVM.OrderHeader.ApplicationUser.StreetAdress;
+				//ShoppingCartVM.OrderHeader.PostalCode = ShoppingCartVM.OrderHeader.ApplicationUser.PostalCode;
 			}
 			else
 			{
-				userId = HttpContext.Session.GetString("SessionId");
+                var citiesResponse = _novaPoshtaClient.Address.GetCities().GetAwaiter().GetResult();
+                var cities = citiesResponse?.Select(c => c.Description);
+                userId = HttpContext.Session.GetString("SessionId");
 				if (string.IsNullOrEmpty(userId))
 				{
 					userId = Guid.NewGuid().ToString();
@@ -94,8 +102,9 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 				ShoppingCartVM = new()
 				{
 					ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.GuestId == userId, includeProperties: "Product"),
-					OrderHeader = new()
-				};
+					OrderHeader = new(),
+                    Cities = cities
+                };
 			}
 
 			foreach (var cart in ShoppingCartVM.ShoppingCartList)
@@ -246,7 +255,16 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 
 			return View(ShoppingCartVM);
 		}
-		public IActionResult Plus(int cardId)
+
+        [HttpGet]
+        public async Task<IActionResult> GetWarehousesByCityName(string cityName)
+        {
+            var warehousesResponse = await _novaPoshtaClient.Address.GetWarehousesByCityName(cityName);
+            var warehouses = warehousesResponse?.Select(w => w.Description);
+
+            return Json(warehouses);
+        }
+        public IActionResult Plus(int cardId)
 		{
 			var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cardId);
 			cartFromDb.Count += 1;

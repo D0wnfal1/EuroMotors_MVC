@@ -10,6 +10,8 @@ namespace EuroMotors.Models.ViewModels
     {
         public IEnumerable<ShoppingCart> ShoppingCartList { get; set; }
         public OrderHeader OrderHeader { get; set; }
+        public IEnumerable<string> Cities { get; set; }
+        public IEnumerable<string> Warehouses { get; set; }
 
-	}
+    }
 }

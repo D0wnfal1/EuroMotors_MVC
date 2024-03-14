@@ -42,9 +42,8 @@ namespace EuroMotorsWeb.Areas.Admin.Controllers
 			var orderHeaderFromDb = _unitOfWork.OrderHeader.Get(u => u.Id == OrderVM.OrderHeader.Id);
 			orderHeaderFromDb.Name = OrderVM.OrderHeader.Name;
 			orderHeaderFromDb.PhoneNumber = OrderVM.OrderHeader.PhoneNumber;
-			orderHeaderFromDb.StreetAddress = OrderVM.OrderHeader.StreetAddress;
 			orderHeaderFromDb.City = OrderVM.OrderHeader.City;
-			orderHeaderFromDb.PostalCode = OrderVM.OrderHeader.PostalCode;
+			orderHeaderFromDb.Warehouse = OrderVM.OrderHeader.Warehouse;
 			if (!string.IsNullOrEmpty(OrderVM.OrderHeader.Carrier))
 			{
 				orderHeaderFromDb.Carrier = OrderVM.OrderHeader.Carrier;

@@ -29,12 +29,8 @@ namespace EuroMotors.Models
         public string? Data { get; set; }
 		[Required(ErrorMessage = "Поле Номер Телефону є обов'язковим.")]
 		public string? PhoneNumber { get; set; }
-		[Required(ErrorMessage = "Поле Адрес Відправки є обов'язковим.")]
-		public string? StreetAddress { get; set; }
-		[Required(ErrorMessage = "Поле Місто є обов'язковим.")]
 		public string? City { get; set; }
-		[Required(ErrorMessage = "Поле Поштовий Індекс є обов'язковим.")]
-		public string? PostalCode { get; set; }
+		public string? Warehouse { get; set; }
 		[Required(ErrorMessage = "Поле Ім'я є обов'язковим.")]
 		public string Name { get; set; }
     }
