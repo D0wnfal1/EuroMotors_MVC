@@ -44,16 +44,6 @@
 								</div>
 							</div>
 							<div class="row my-1">
-								<div class="col-3">Адреса</div>
-								<div class="col-9">
-									@if (User.IsInRole(SD.Role_Admin))
-									{
-										<input asp-for="OrderHeader.StreetAddress" type="text" class="form-control" />
-										<span asp-validation-for="OrderHeader.StreetAddress" class="text-danger"></span>
-									}
-								</div>
-							</div>
-							<div class="row my-1">
 								<div class="col-3">Місто</div>
 								<div class="col-9">
 									@if (User.IsInRole(SD.Role_Admin))
@@ -64,15 +54,16 @@
 								</div>
 							</div>
 							<div class="row my-1">
-								<div class="col-3">Поштовий код</div>
+								<div class="col-3">Адреса</div>
 								<div class="col-9">
 									@if (User.IsInRole(SD.Role_Admin))
 									{
-										<input asp-for="OrderHeader.PostalCode" type="text" class="form-control" />
-										<span asp-validation-for="OrderHeader.PostalCode" class="text-danger"></span>
+										<input asp-for="OrderHeader.Warehouse" type="text" class="form-control" />
+										<span asp-validation-for="OrderHeader.Warehouse" class="text-danger"></span>
 									}
 								</div>
 							</div>
+
 							<div class="row my-1">
 								<div class="col-3">Електронна пошта</div>
 								<div class="col-9">
