@@ -42,13 +42,10 @@ namespace EuroMotors.DataAccess.DbInitializer
 
 				_userManager.CreateAsync(new ApplicationUser
 				{
-					UserName = "admin@gmail.com",
-					Email = "admin@gmail.com",
+					UserName = "admin@admin.com",
+					Email = "admin@admin.com",
 					Name = "Romenskyi Danylo",
 					PhoneNumber = "1112223333",
-					StreetAdress = "Test Address",
-					PostalCode = "123123",
-					City = "Kyiv"
 				}, "Admin123*").GetAwaiter().GetResult();
 
 

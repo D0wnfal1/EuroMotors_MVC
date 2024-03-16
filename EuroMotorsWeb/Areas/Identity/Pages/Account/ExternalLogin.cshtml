@@ -5,13 +5,13 @@
 }
 
 <h1>@ViewData["Title"]</h1>
-<h2 id="external-login-title">Associate your @Model.ProviderDisplayName account.</h2>
+<h2 id="external-login-title">Пов’яжіть свій обліковий запис з @Model.ProviderDisplayName.</h2>
 <hr />
 
 <p id="external-login-description" class="text-info">
-    You've successfully authenticated with <strong>@Model.ProviderDisplayName</strong>.
-    Please enter an email address for this site below and click the Register button to finish
-    logging in.
+    Ви успішно пройшли автентифікацію за допомогою<strong>@Model.ProviderDisplayName</strong>.
+    Будь ласка, введіть адресу електронної пошти для цього сайту нижче та натисніть кнопку «Зареєструватись», щоб завершити
+    вхід в систему.
 </p>
 
 <div class="row">
@@ -32,21 +32,6 @@
                 <input asp-for="Input.PhoneNumber" class="form-control" autocomplete="email" placeholder="Please enter your PhoneNumber." />
                 <label asp-for="Input.PhoneNumber" class="form-label"></label>
                 <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.StreetAdress" class="form-control" autocomplete="email" placeholder="Please enter your StreetAddress." />
-                <label asp-for="Input.StreetAdress" class="form-label"></label>
-                <span asp-validation-for="Input.StreetAdress" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.City" class="form-control" autocomplete="email" placeholder="Please enter your City." />
-                <label asp-for="Input.City" class="form-label"></label>
-                <span asp-validation-for="Input.City" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.PostalCode" class="form-control" autocomplete="email" placeholder="Please enter your Postal Code." />
-                <label asp-for="Input.PostalCode" class="form-label"></label>
-                <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
             </div>
             <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </form>
