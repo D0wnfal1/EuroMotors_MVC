@@ -47,29 +47,14 @@
 						<label asp-for="Input.PhoneNumber" class="ms-2 text-muted">Номер телефону</label>
 						<span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
 					</div>
-					<div class="form-floating mb-3 col-md-6">
-						<input asp-for="Input.StreetAdress" class="form-control" placeholder="ім'я@example.com" />
-						<label asp-for="Input.StreetAdress" class="ms-2 text-muted">Адреса вулиці</label>
-						<span asp-validation-for="Input.StreetAdress" class="text-danger"></span>
-					</div>
-					<div class="form-floating mb-3 col-md-6">
-						<input asp-for="Input.City" class="form-control" placeholder="ім'я@example.com" />
-						<label asp-for="Input.City" class="ms-2 text-muted">Місто</label>
-						<span asp-validation-for="Input.City" class="text-danger"></span>
-					</div>
-					<div class="form-floating mb-3 col-md-6">
-						<input asp-for="Input.PostalCode" class="form-control" placeholder="ім'я@example.com" />
-						<label asp-for="Input.PostalCode" class="ms-2 text-muted">Поштовий індекс</label>
-						<span asp-validation-for="Input.PostalCode" class="text-danger"></span>
-					</div>
-					@* @if (User.IsInRole(SD.Role_Admin))
-					{ *@
+					 @if (User.IsInRole(SD.Role_Admin))
+					{
 					<div class="form-floating mb-3 col-md-6">
 						<select asp-for="Input.Role" asp-items="@Model.Input.RoleList" class="form-select">
 							<option disabled selected>--Виберіть Роль</option>
 						</select>
 					</div>
-					@* } *@
+					} 
 					<div class="col-12">
 						<button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Зареєструватися</button>
 					</div>
