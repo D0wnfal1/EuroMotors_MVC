@@ -22,6 +22,7 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
         private readonly NovaPoshtaClient _novaPoshtaClient;
         [BindProperty]
 		public ShoppingCartVM ShoppingCartVM { get; set; }
+
 		public CartController(IUnitOfWork unitOfWork, IConfiguration configuration, NovaPoshtaClient novaPoshtaClient)
 		{
 			_unitOfWork = unitOfWork;
@@ -215,10 +216,12 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 				orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == id);
 			}
 			var domain = "https://localhost:7159/";
-			var paymentRequest = new LiqPayRequest
+			var var = Environment.GetEnvironmentVariable("LIQPAY_PUBLIC_KEY");
+
+            var paymentRequest = new LiqPayRequest
 			{
-				PublicKey = _configuration["LiqPaySettings:PublicKey"],
-				Amount = ShoppingCartVM.OrderHeader.OrderTotal,
+                PublicKey = Environment.GetEnvironmentVariable("LIQPAY_PUBLIC_KEY"),
+                Amount = ShoppingCartVM.OrderHeader.OrderTotal,
 				Currency = "UAH",
 				OrderId = ShoppingCartVM.OrderHeader.Id.ToString(),
 				Action = LiqPayRequestAction.Pay,
@@ -236,7 +239,7 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 
 			var json_string = JsonConvert.SerializeObject(paymentRequest);
 			var data_hash = Convert.ToBase64String(Encoding.UTF8.GetBytes(json_string));
-			var signature_hash = Convert.ToBase64String(SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes(_configuration["LiqPaySettings:PrivateKey"] + data_hash + _configuration["LiqPaySettings:PrivateKey"])));
+			var signature_hash = Convert.ToBase64String(SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("LIQPAY_PRIVATE_KEY") + data_hash + Environment.GetEnvironmentVariable("LIQPAY_PRIVATE_KEY"))));
 			ShoppingCartVM.OrderHeader.Data = data_hash;
 			ShoppingCartVM.OrderHeader.Signature = signature_hash;
 			_unitOfWork.OrderHeader.UpdateLiqPayPaymentID(id, ShoppingCartVM.OrderHeader.Signature, ShoppingCartVM.OrderHeader.Data);
