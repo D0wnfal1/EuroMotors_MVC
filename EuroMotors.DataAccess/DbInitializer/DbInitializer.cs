@@ -49,7 +49,7 @@ namespace EuroMotors.DataAccess.DbInitializer
 				}, "Admin123*").GetAwaiter().GetResult();
 
 
-				ApplicationUser user = _db.ApplicationUsers.FirstOrDefault(u => u.Email == "admin@gmail.com");
+				ApplicationUser user = _db.ApplicationUsers.FirstOrDefault(u => u.Email == "admin@admin.com");
 				_userManager.AddToRoleAsync(user, SD.Role_Admin).GetAwaiter().GetResult();
 			}
 			return;
