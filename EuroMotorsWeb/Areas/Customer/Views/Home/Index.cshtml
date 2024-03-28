@@ -1,80 +1,105 @@
 ﻿@model IEnumerable<Product>
+@{
+    var categories = Model.Select(x => x.Category).Distinct().ToList();
+    var brands = Model.Select(x => x.CarModel?.Brand).Where(x => x != null).Distinct().ToList();
+}
 <style>
-	.card {
-		height: 100%;
-	}
+    .card {
+        height: 100%;
+    }
 </style>
-<div class="row pb-3">
-	@foreach (var product in ViewBag.PopularProducts)
-	{
-		<div class="col-lg-3 col-sm-6">
-			<div class="row p-2" style="height: 100%">
-				<div class="col-12 p-1">
-					<div class="card border-0 p-3 shadow border-top border-5 rounded">
-						@if (product.ProductImages != null && product.ProductImages.Count > 0)
-						{
-							<img src="@product.ProductImages.FirstOrDefault().ImageUrl" style="object-fit: cover; width: 274px; height: 274px;" class="card-img-top rounded" />
-						}
-						else
-						{
-							<img src="https://placehold.co/274x274/png" class="card-img-top rounded" />
-						}
-						<div class="card-body pb-0">
-							<div class="pl-1">
-								<p class="card-title h5 text-primary opacity-75 text-uppercase text-center">@product.Title</p>
-								@if (product.CarModel != null)
-								{
-									<p class="card-title text-primary opacity-100 text-center">@product.CarModel.Brand @product.CarModel.Model @product.CarModel.Year </p>
-								}
-								<p class="card-title text-primary opacity-75 text-uppercase text-center">@product.VendorCode</p>
-								<p class="card-title text-warning text-center">Виробник <b>@product.Brand</b></p>
-							</div>
-							@if (product.ListPrice != product.Price)
-							{
-								<div class="pl-1">
-									<p class="text-success text-opacity-75 text-center mb-0"><span class="text-decoration-line-through">@product.ListPrice.ToString("c")</span></p>
-								</div>
-								<div class="pl-1">
-									<p class="text-success text-opacity-75 text-center"><span>@product.Price.ToString("c")</span></p>
-								</div>
-							}
-							else
-							{
-								<div class="pl-1">
-									<p class="text-success text-opacity-75 text-center"><span>@product.Price.ToString("c")</span></p>
-								</div>
-							}
-						</div>
-						<div>
-							<a asp-action="Details" asp-route-productId="@product.Id" class="btn btn-primary bg-gradient border-0 form-control">
-								Купити
-							</a>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	}
-</div>
-<div class="row pb-3">
-	<div class="row">
 
-		<div class="row">
-			@foreach (var category in Model)
-			{
-				<div class="col-lg-3 col-md-4 col-sm-6 mb-3">
-					<a href="@Url.Action("ProductsByCategory", "Home", new { categoryName = category.Category.Name })" class="btn btn-primary">@category.Category.Name</a>
-				</div>
-			}
-		</div>
-		@foreach (var brand in Model)
-		{
-			@if (brand.CarModel != null)
-			{
-				<div class="col-lg-3 col-md-4 col-sm-6 mb-3">
-					<a href="@Url.Action("ProductsByBrand", "Home", new { brandName = brand.CarModel.Brand })" class="btn btn-primary">@brand.CarModel.Brand</a>
-				</div>
-			}
-		}
-	</div>
+<div class="container mt-5">
+    <h2 class="mb-4">Популярні товари</h2>
+    <div id="popularCarousel" class="carousel carousel-dark slide" >
+        <div class="carousel-inner">
+            @foreach (var chunk in Model.Select((value, index) => new { value, index }).GroupBy(x => x.index / 4))
+            {
+                <div class="carousel-item @(chunk.Key == 0 ? "active" : "")">
+                    <div class="row row-cols-1 row-cols-md-4 g-4">
+                        @foreach (var product in chunk)
+                        {
+                            <div class="col-lg-3 col-sm-6">
+                                <div class="row p-2" style="height: 580px">
+                                    <div class="col-12 p-1">
+                                        <div class="card border-0 p-3 shadow border-top border-5 rounded">
+                                            @if (product.value.ProductImages != null && product.value.ProductImages.Count() > 0)
+                                            {
+                                                <img src="@product.value.ProductImages.FirstOrDefault().ImageUrl" style="object-fit: cover; width: 274px; height: 274px;" class="card-img-top rounded" />
+                                            }
+                                            else
+                                            {
+                                                <img src="https://placehold.co/274x274/png" class="card-img-top rounded" />
+                                            }
+                                            <div class="card-body pb-0">
+                                                <div class="pl-1">
+                                                    <p class="card-title h5 text-primary opacity-75 text-uppercase text-center">@product.value.Title</p>
+                                                    @if (product.value.CarModel != null)
+                                                    {
+                                                        <p class="card-title text-primary opacity-100 text-center">@product.value.CarModel.Brand @product.value.CarModel.Model @product.value.CarModel.Year </p>
+                                                    }
+                                                    <p class="card-title text-primary opacity-75 text-uppercase text-center">@product.value.VendorCode</p>
+                                                    <p class="card-title text-warning text-center">Виробник <b>@product.value.Brand</b></p>
+                                                </div>
+                                                @if (product.value.ListPrice != product.value.Price)
+                                                {
+                                                    <div class="pl-1">
+                                                        <p class="text-success text-opacity-75 text-center mb-0"><span class="text-decoration-line-through">@product.value.ListPrice.ToString("c")</span></p>
+                                                    </div>
+                                                    <div class="pl-1">
+                                                        <p class="text-success text-opacity-75 text-center"><span>@product.value.Price.ToString("c")</span></p>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="pl-1">
+                                                        <p class="text-success text-opacity-75 text-center"><span>@product.value.Price.ToString("c")</span></p>
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div>
+                                                <a asp-action="Details" asp-route-productId="@product.value.Id" class="btn btn-primary bg-gradient border-0 form-control">
+                                                    Купити
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#popularCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon me-5 mt-5" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#popularCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon ms-5 mt-5" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+
+    <div class="mt-4">
+        <div class="row">
+            @foreach (var category in categories)
+            {
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                    <a href="@Url.Action("ProductsByCategory", "Home", new { categoryName = category.Name })" class="btn btn-outline-primary w-100">@category.Name</a>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="mt-2">
+        <div class="row">
+            @foreach (var brand in brands)
+            {
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                    <a href="@Url.Action("ProductsByBrand", "Home", new { brandName = brand })" class="btn btn-outline-primary w-100">@brand</a>
+                </div>
+            }
+        </div>
+    </div>
 </div>
