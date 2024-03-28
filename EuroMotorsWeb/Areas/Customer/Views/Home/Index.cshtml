@@ -5,13 +5,13 @@
 	}
 </style>
 <div class="row pb-3">
-	@foreach (var product in Model)
+	@foreach (var product in ViewBag.PopularProducts)
 	{
 		<div class="col-lg-3 col-sm-6">
 			<div class="row p-2" style="height: 100%">
 				<div class="col-12 p-1">
 					<div class="card border-0 p-3 shadow border-top border-5 rounded">
-						@if (product.ProductImages != null && product.ProductImages.Count() > 0)
+						@if (product.ProductImages != null && product.ProductImages.Count > 0)
 						{
 							<img src="@product.ProductImages.FirstOrDefault().ImageUrl" style="object-fit: cover; width: 274px; height: 274px;" class="card-img-top rounded" />
 						}
@@ -55,4 +55,26 @@
 			</div>
 		</div>
 	}
+</div>
+<div class="row pb-3">
+	<div class="row">
+
+		<div class="row">
+			@foreach (var category in Model)
+			{
+				<div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+					<a href="@Url.Action("ProductsByCategory", "Home", new { categoryName = category.Category.Name })" class="btn btn-primary">@category.Category.Name</a>
+				</div>
+			}
+		</div>
+		@foreach (var brand in Model)
+		{
+			@if (brand.CarModel != null)
+			{
+				<div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+					<a href="@Url.Action("ProductsByBrand", "Home", new { brandName = brand.CarModel.Brand })" class="btn btn-primary">@brand.CarModel.Brand</a>
+				</div>
+			}
+		}
+	</div>
 </div>

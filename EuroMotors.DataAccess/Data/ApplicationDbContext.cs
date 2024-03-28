@@ -83,17 +83,6 @@ namespace EuroMotors.DataAccess.Data
 					Price = 4147,
 					CategoryId = 3,
 					CarModelId = 3,
-				},
-				new Product
-				{
-					Id = 4,
-					Title = "Свічка розжарювання",
-					Desctiption = "Lorem Ipsum is simply dummy text of the printing and ty +pesetting industry.",
-					VendorCode = "159Rer0080",
-					Brand = "Bosch",
-					ListPrice = 507,
-					Price = 500,
-					CategoryId = 3,
 				}
 				);
 		}
