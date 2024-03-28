@@ -18,17 +18,21 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 	{
 		private readonly IUnitOfWork _unitOfWork;
         private readonly NovaPoshtaClient _novaPoshtaClient;
+
         [BindProperty]
 		public ShoppingCartVM ShoppingCartVM { get; set; }
+
 		public CartController(IUnitOfWork unitOfWork, NovaPoshtaClient novaPoshtaClient)
 		{
 			_unitOfWork = unitOfWork;
             _novaPoshtaClient = novaPoshtaClient;
         }
+
 		private string GetUserId()
 		{
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
 			string userId = "";
+
 			if (claimsIdentity.IsAuthenticated)
 			{
 				userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -48,6 +52,7 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 		{
 			var userId = GetUserId();
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
+
 			ShoppingCartVM ShoppingCartVM = new ShoppingCartVM();
 			if (claimsIdentity != null && claimsIdentity.IsAuthenticated)
 			{
@@ -58,7 +63,8 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 				ShoppingCartVM.ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.GuestId == userId, includeProperties: "Product");
 			}
 			IEnumerable<ProductImage> productImages = _unitOfWork.ProductImage.GetAll();
-			ShoppingCartVM.OrderHeader = new OrderHeader(); // Инициализируем OrderHeader здесь
+			ShoppingCartVM.OrderHeader = new OrderHeader();
+
 			foreach (var cart in ShoppingCartVM.ShoppingCartList)
 			{
 				cart.Product.ProductImages = productImages.Where(u => u.ProductId == cart.Product.Id).ToList();
@@ -72,6 +78,7 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
 			string userId = "";
 			IEnumerable<string> cities = null;
+
 			if (claimsIdentity.IsAuthenticated)
 			{
 				userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -85,20 +92,24 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 					HttpContext.Session.SetString("SessionId", userId);
 				}
 			}
+
 			var citiesResponse = _novaPoshtaClient.Address.GetCities().GetAwaiter().GetResult();
 			cities = citiesResponse?.Select(c => c.Description);
+
 			ShoppingCartVM = new ShoppingCartVM()
 			{
 				ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId || u.GuestId == userId, includeProperties: "Product"),
 				OrderHeader = new OrderHeader(),
 				Cities = cities
 			};
+
 			if (claimsIdentity.IsAuthenticated)
 			{
 				ShoppingCartVM.OrderHeader.ApplicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == userId);
 				ShoppingCartVM.OrderHeader.Name = ShoppingCartVM.OrderHeader.ApplicationUser.Name;
 				ShoppingCartVM.OrderHeader.PhoneNumber = ShoppingCartVM.OrderHeader.ApplicationUser.PhoneNumber;
 			}
+
 			foreach (var cart in ShoppingCartVM.ShoppingCartList)
 			{
 				cart.Price = cart.Product.Price;
@@ -106,12 +117,14 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			}
 			return View(ShoppingCartVM);
 		}
+
 		[HttpPost]
 		[ActionName("Summary")]
 		public IActionResult SummaryPOST()
 		{
 			var userId = GetUserId();
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
+
 			if (claimsIdentity.IsAuthenticated)
 			{
 				ShoppingCartVM.ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product");
@@ -129,15 +142,18 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 				ShoppingCartVM.OrderHeader.OrderDate = DateTime.Now;
 				ShoppingCartVM.OrderHeader.GuestId = userId;
 			}
+
 			foreach (var cart in ShoppingCartVM.ShoppingCartList)
 			{
 				cart.Price = cart.Product.Price;
 				ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
 			}
+
 			ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusPending;
 			ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
 			_unitOfWork.OrderHeader.Add(ShoppingCartVM.OrderHeader);
 			_unitOfWork.Save();
+
 			foreach (var cart in ShoppingCartVM.ShoppingCartList)
 			{
 				OrderDetail orderDetail = new OrderDetail()
@@ -152,14 +168,17 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			}
 			return RedirectToAction(nameof(OrderConfirmation), new { id = ShoppingCartVM.OrderHeader.Id });
 		}
+
 		public IActionResult OrderConfirmation(int id)
 		{
 			var userId = GetUserId();
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
+
 			ShoppingCartVM = new ShoppingCartVM
 			{
 				OrderHeader = new OrderHeader()
 			};
+
 			if (claimsIdentity.IsAuthenticated)
 			{
 				ShoppingCartVM.ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product");
@@ -168,15 +187,19 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			{
 				ShoppingCartVM.ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.GuestId == userId, includeProperties: "Product");
 			}
+
 			ShoppingCartVM.OrderHeader.OrderDate = DateTime.Now;
 			ShoppingCartVM.OrderHeader.GuestId = userId;
+
 			foreach (var cart in ShoppingCartVM.ShoppingCartList)
 			{
 				cart.Price = cart.Product.Price;
 				ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
 			}
+
 			ShoppingCartVM.OrderHeader.Id = id;
 			OrderHeader orderHeader;
+
 			if (claimsIdentity.IsAuthenticated)
 			{
 				orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == id, includeProperties: "ApplicationUser");
@@ -185,6 +208,7 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			{
 				orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == id);
 			}
+
 			var domain = "https://localhost:7159/";
 			var paymentRequest = new LiqPayRequest
 			{
@@ -211,6 +235,7 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			ShoppingCartVM.OrderHeader.Signature = signature_hash;
 			_unitOfWork.OrderHeader.UpdateLiqPayPaymentID(id, ShoppingCartVM.OrderHeader.Signature, ShoppingCartVM.OrderHeader.Data);
 			_unitOfWork.Save();
+
 			List<ShoppingCart> shoppingCarts;
 			if (claimsIdentity.IsAuthenticated)
 			{
@@ -224,6 +249,7 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			_unitOfWork.Save();
 			return View(ShoppingCartVM);
 		}
+
 		[HttpGet]
         public async Task<IActionResult> GetWarehousesByCityName(string cityName)
         {
@@ -239,6 +265,7 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			_unitOfWork.Save();
 			return RedirectToAction(nameof(Index));
 		}
+
 		public IActionResult Minus(int cardId)
 		{
 			var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cardId);
@@ -254,6 +281,7 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			_unitOfWork.Save();
 			return RedirectToAction(nameof(Index));
 		}
+
 		public IActionResult Remove(int cardId)
 		{
 			var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cardId);

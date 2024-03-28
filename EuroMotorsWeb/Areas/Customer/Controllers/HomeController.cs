@@ -31,6 +31,8 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 		public IActionResult Index()
 		{
 			IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperties: "Category,CarModel,ProductImages");
+			IEnumerable<Product> popularProducts = _unitOfWork.Product.GetAll().OrderBy(p => p.Id).Take(4);
+			ViewBag.PopularProducts = popularProducts;
 			return View(productList);
 		}
 
@@ -46,7 +48,6 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			return View(cart);
 		}
 		[HttpPost]
-		//[Authorize]
 		public IActionResult Details(ShoppingCart shoppingCart)
 		{
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
@@ -85,6 +86,24 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			_unitOfWork.Save();
 			return RedirectToAction(nameof(Index));
 		}
+
+        public IActionResult ProductsByCategory(string categoryName)
+        {
+            var products = _unitOfWork.Product.GetAll(includeProperties: "Category,CarModel")
+                .Where(p => p.Category != null && p.Category.Name == categoryName)
+                .ToList();
+
+            return View(products);
+        }
+
+        public IActionResult ProductsByBrand(string brandName)
+		{
+			var products = _unitOfWork.Product.GetAll(includeProperties: "Category,CarModel")
+			.Where(p => p.CarModel != null && p.CarModel.Brand == brandName)
+			.ToList();
+			return View(products);
+		}
+
 		[HttpPost]
 		public IActionResult Redirect()
 		{
