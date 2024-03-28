@@ -89,16 +89,15 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 
         public IActionResult ProductsByCategory(string categoryName)
         {
-            var products = _unitOfWork.Product.GetAll(includeProperties: "Category,CarModel")
+            var products = _unitOfWork.Product.GetAll(includeProperties: "Category,CarModel,ProductImages")
                 .Where(p => p.Category != null && p.Category.Name == categoryName)
                 .ToList();
-
             return View(products);
         }
 
         public IActionResult ProductsByBrand(string brandName)
 		{
-			var products = _unitOfWork.Product.GetAll(includeProperties: "Category,CarModel")
+			var products = _unitOfWork.Product.GetAll(includeProperties: "Category,CarModel,ProductImages")
 			.Where(p => p.CarModel != null && p.CarModel.Brand == brandName)
 			.ToList();
 			return View(products);
