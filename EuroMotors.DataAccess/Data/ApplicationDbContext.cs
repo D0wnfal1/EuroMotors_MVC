@@ -30,12 +30,14 @@ namespace EuroMotors.DataAccess.Data
 			modelBuilder.Entity<Category>().HasData(
 				new Category { Id = 1, Name = "Запчастини для Т/О", DisplayOrder = 1 },
 				new Category { Id = 2, Name = "Шини", DisplayOrder = 2 },
-				new Category { Id = 3, Name = "Диски", DisplayOrder = 3 }
+				new Category { Id = 3, Name = "Диски", DisplayOrder = 3 },
+				new Category { Id = 4, Name = "Інструменти", DisplayOrder = 4 }
 				);
 			modelBuilder.Entity<CarModel>().HasData(
 				new CarModel { Id = 1, Brand = "Toyota", Model = "Carolla", Year = 2018, DisplayOrder = 1 },
 				new CarModel { Id = 2, Brand = "Honda", Model = "Civic", Year = 2020, DisplayOrder = 2 },
-				new CarModel { Id = 3, Brand = "Chevrolet", Model = "Camaro", Year = 2015, DisplayOrder = 3 }
+				new CarModel { Id = 3, Brand = "Chevrolet", Model = "Camaro", Year = 2015, DisplayOrder = 3 },
+				new CarModel { Id = 4, Brand = "Audi", Model = "Q7", Year = 2005, DisplayOrder = 4 }
 				);
 			modelBuilder.Entity<Product>().HasData(
 				new Product
@@ -83,8 +85,21 @@ namespace EuroMotors.DataAccess.Data
 					Price = 4147,
 					CategoryId = 3,
 					CarModelId = 3,
-				}
-				);
+				},
+                new Product
+                {
+                    Id = 4,
+                    Title = "Моторна олива MANNOL ELITE SAE 5W-40 4л (MN7903-4)",
+                    Desctiption = "Lorem Ipsum is simply dummy text of the printing and typesetting industry." +
+                    " Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took",
+                    VendorCode = "1287435",
+                    Brand = "Bosch",
+                    ListPrice = 1699,
+                    Price = 1699,
+                    CategoryId = 4,
+                    CarModelId = 4,
+                }
+                );
 		}
 	}
 }

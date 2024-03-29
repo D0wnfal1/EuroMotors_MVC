@@ -28,15 +28,14 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			_configuration = configuration;
 		}
 
-		public IActionResult Index()
-		{
-			IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperties: "Category,CarModel,ProductImages");
-			IEnumerable<Product> popularProducts = _unitOfWork.Product.GetAll().OrderBy(p => p.Id).Take(4);
-			ViewBag.PopularProducts = popularProducts;
-			return View(productList);
-		}
+        public IActionResult Index()
+        {
+            IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperties: "Category,CarModel,ProductImages");
+            return View(productList);
+        }
 
-		public IActionResult Details(int productId)
+
+        public IActionResult Details(int productId)
 		{
 			ShoppingCart cart = new()
 			{
