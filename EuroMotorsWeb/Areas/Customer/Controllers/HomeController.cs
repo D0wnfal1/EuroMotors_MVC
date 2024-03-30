@@ -1,4 +1,4 @@
-using EuroMotors.DataAccess.Repository.IRepository;
+Ôªøusing EuroMotors.DataAccess.Repository.IRepository;
 using EuroMotors.Models;
 using EuroMotors.Models.ViewModels;
 using EuroMotors.Utility;
@@ -81,7 +81,7 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			{
 				_unitOfWork.ShoppingCart.Add(shoppingCart);
 			}
-			TempData["success"] = " Ó¯ËÍ ÛÒÔ≥¯ÌÓ ÓÌÓ‚ÎÂÌËÈ!";
+			TempData["success"] = "–ö–æ—à–∏–∫ —É—Å–ø—ñ—à–Ω–æ –æ–Ω–æ–≤–ª–µ–Ω–∏–π!";
 			_unitOfWork.Save();
 			return RedirectToAction(nameof(Index));
 		}
@@ -102,34 +102,29 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			return View(products);
 		}
 
-		[HttpPost]
-		public IActionResult Redirect()
-		{
-			var request_dictionary = Request.Form.Keys.ToDictionary(key => key, key => Request.Form[key]);
-			byte[] request_data = Convert.FromBase64String(request_dictionary["data"]);
-			string decodedString = Encoding.UTF8.GetString(request_data);
-			var request_data_dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(decodedString);
-			var mySignature = Convert.ToBase64String(SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes(_configuration["LiqPaySettings:PrivateKey"] + request_dictionary["data"] + _configuration["LiqPaySettings:PrivateKey"])));
-			if (mySignature != request_dictionary["signature"])
-			{
-				TempData["error"] = "ŒÔÎ‡Ú‡ ÌÂ ·ÛÎ‡ Á‰≥ÈÒÌÂÌ‡!";
-				return RedirectToAction(nameof(Index));
-			}
-			if (request_data_dictionary["status"] == "sandbox" || request_data_dictionary["status"] == "success")
-			{
-				OrderHeader orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == Convert.ToInt32(request_data_dictionary["order_id"]), includeProperties: "ApplicationUser");
-				_unitOfWork.OrderHeader.UpdateStatus(Convert.ToInt32(request_data_dictionary["order_id"]), SD.StatusApproved, SD.PaymentStatusApproved);
-				TempData["success"] = "ŒÔÎ‡Ú‡ œÓÈ¯Î‡ ”ÒÔ≥¯ÌÓ!";
-				_unitOfWork.Save();
-				return RedirectToAction(nameof(Index));
-			}
-			else
-			{
-				TempData["error"] = "ŒÔÎ‡Ú‡ ÌÂ ·ÛÎ‡ Á‰≥ÈÒÌÂÌ‡!";
-				return RedirectToAction(nameof(Index));
-			}
-		}
-		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        [HttpPost]
+        public IActionResult Redirect()
+        {
+            var request_dictionary = Request.Form.Keys.ToDictionary(key => key, key => Request.Form[key]);
+            byte[] request_data = Convert.FromBase64String(request_dictionary["data"]);
+            string decodedString = Encoding.UTF8.GetString(request_data);
+            var request_data_dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(decodedString);
+
+            if (request_data_dictionary["status"] == "sandbox" || request_data_dictionary["status"] == "success")
+            {
+                OrderHeader orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == Convert.ToInt32(request_data_dictionary["order_id"]), includeProperties: "ApplicationUser");
+                _unitOfWork.OrderHeader.UpdateStatus(Convert.ToInt32(request_data_dictionary["order_id"]), SD.StatusApproved, SD.PaymentStatusApproved);
+                TempData["success"] = "–û–ø–ª–∞—Ç–∞ –∑–¥—ñ–π—Å–Ω–µ–Ω–∞ —É—Å–ø—ñ—à–Ω–æ!";
+                _unitOfWork.Save();
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                TempData["error"] = "–û–ø–ª–∞—Ç–∞ –Ω–µ –∑–¥—ñ–π—Å–Ω–µ–Ω–∞!";
+                return RedirectToAction(nameof(Index));
+            }
+        }
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 		public IActionResult Error()
 		{
 			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

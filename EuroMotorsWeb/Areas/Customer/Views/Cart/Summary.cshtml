@@ -130,7 +130,7 @@
 					success: function (response) {
 						var warehousesDropdown = $('#warehouse');
 						warehousesDropdown.empty();
-						warehousesDropdown.append($('<option>').text('-- Select Warehouse --').val(''));
+						warehousesDropdown.append($('<option>').text('-- Виберіть Відделення --').val(''));
 						$.each(response, function (index, warehouse) {
 							warehousesDropdown.append($('<option>').text(warehouse).val(warehouse));
 						});
