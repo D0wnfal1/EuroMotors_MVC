@@ -73,11 +73,10 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			}
 			return View(ShoppingCartVM);
 		}
-		public async Task<IActionResult> SummaryAsync()
+		public async Task<IActionResult> Summary(string cityName = "")
 		{
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
 			string userId = "";
-			IEnumerable<string> cities = null;
 
 			if (claimsIdentity.IsAuthenticated)
 			{
@@ -93,8 +92,13 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 				}
 			}
 
-			var citiesResponse = await _novaPoshtaClient.Address.GetCities().ConfigureAwait(false);
-			cities = citiesResponse?.Select(c => c.Description);
+			var cities = Enumerable.Empty<string>();
+
+			if (!string.IsNullOrEmpty(cityName))
+			{
+				var citiesResponse = await _novaPoshtaClient.Address.GetCities(cityName);
+				cities = citiesResponse?.Select(c => c.Description);
+			}
 
 			ShoppingCartVM = new ShoppingCartVM()
 			{
@@ -119,10 +123,10 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> GetCities()
+		public IActionResult SearchCities(string cityName)
 		{
-			var citiesResponse = await _novaPoshtaClient.Address.GetCities().ConfigureAwait(false);
-			var cities = citiesResponse?.Select(c => c.Description);
+			var citiesResponse = _novaPoshtaClient.Address.GetCities().GetAwaiter().GetResult();
+			var cities = citiesResponse?.Select(c => c.Description).Where(c => c.ToLower().Contains(cityName.ToLower())).ToList();
 			return Json(cities);
 		}
 

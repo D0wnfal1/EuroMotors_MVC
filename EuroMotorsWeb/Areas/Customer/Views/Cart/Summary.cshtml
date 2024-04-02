@@ -47,15 +47,8 @@
 									<label>Місто</label>
 								</div>
 								<div class="col-9">
-									<div class="form-group">
-										<select class="form-control" id="city" name="city">
-											<option value="">-- Виберіть Місто --</option>
-											@foreach (var city in Model.Cities)
-											{
-												<option value="@city">@city</option>
-											}
-										</select>
-									</div>
+									<input type="text" id="cityNameInput" class="form-control" placeholder="Введіть назву міста" autocomplete="off" />
+									<div id="cityList"></div>
 									<input hidden asp-for="OrderHeader.City" id="selectedCity" class="form-control" />
 									<span asp-validation-for="OrderHeader.City" class="text-danger"></span>
 								</div>
@@ -69,7 +62,7 @@
 									<span asp-validation-for="OrderHeader.Warehouse" class="text-danger"></span>
 									<div class="form-group" id="warehouseDropdown" style="display:none;">
 										<select class="form-control" id="warehouse" name="warehouse">
-											<option value="">-- Виберіть Відделення --</option>
+											<option value="">-- Виберіть Відділення --</option>
 										</select>
 									</div>
 								</div>
@@ -115,35 +108,71 @@
 		</div>
 	</div>
 </form>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-	$(document).ready(function () {
-		$('#city').change(function () {
-			var selectedCity = $(this).val();
-			$('#selectedCity').val(selectedCity);
-			var cityName = $(this).val();
-			if (cityName !== "") {
+@section Scripts {
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		$(document).ready(function () {
+			$('#cityNameInput').on('input', function () {
+				var cityName = $(this).val();
+				if (cityName.length >= 3) {
+					$.ajax({
+						url: '@Url.Action("SearchCities", "Cart")',
+						type: 'GET',
+						data: { cityName: cityName },
+						success: function (response) {
+							var cityList = $('#cityList');
+							cityList.empty();
+							$.each(response, function (index, city) {
+								cityList.append('<div class="city-option">' + city + '</div>');
+							});
+							cityList.show(); // Показываем список городов
+						},
+					});
+				} else {
+					$('#cityList').empty().hide(); // Очищаем и скрываем список городов при недостаточной длине ввода
+				}
+			});
+
+			// Обработка выбора города из списка
+			$(document).on('click', '.city-option', function () {
+				var selectedCity = $(this).text();
+				$('#cityNameInput').val(selectedCity);
+				$('#selectedCity').val(selectedCity);
+				$('#cityList').empty().hide(); // Очищаем и скрываем список городов при выборе города
+
+				// Загрузка отделений по выбранному городу
 				$.ajax({
 					url: '@Url.Action("GetWarehousesByCityName", "Cart")',
 					type: 'GET',
-					data: { cityName: cityName },
+					data: { cityName: selectedCity },
 					success: function (response) {
-						var warehousesDropdown = $('#warehouse');
-						warehousesDropdown.empty();
-						warehousesDropdown.append($('<option>').text('-- Виберіть Відделення --').val(''));
+						var warehouseDropdown = $('#warehouse');
+						warehouseDropdown.empty();
 						$.each(response, function (index, warehouse) {
-							warehousesDropdown.append($('<option>').text(warehouse).val(warehouse));
+							warehouseDropdown.append('<option value="' + warehouse + '">' + warehouse + '</option>');
 						});
 						$('#warehouseDropdown').show();
 					},
 				});
-			} else {
-				$('#warehouseDropdown').hide();
+			});
+		});
+	</script>
+
+	<style>
+		.city-option {
+			padding: 5px 10px;
+			cursor: pointer;
+			transition: background-color 0.3s;
+		}
+
+			.city-option:hover {
+				background-color: #f2f2f2;
 			}
-		});
-		$('#warehouse').change(function () {
-			var selectedWarehouse = $(this).val();
-			$('#selectedWarehouse').val(selectedWarehouse);
-		});
-	});
-</script>
+	</style>
+}
+
+
+
+
+
+
