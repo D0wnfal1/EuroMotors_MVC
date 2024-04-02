@@ -73,7 +73,7 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 			}
 			return View(ShoppingCartVM);
 		}
-		public IActionResult Summary()
+		public async Task<IActionResult> SummaryAsync()
 		{
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
 			string userId = "";
@@ -93,7 +93,7 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 				}
 			}
 
-			var citiesResponse = _novaPoshtaClient.Address.GetCities().GetAwaiter().GetResult();
+			var citiesResponse = await _novaPoshtaClient.Address.GetCities().ConfigureAwait(false);
 			cities = citiesResponse?.Select(c => c.Description);
 
 			ShoppingCartVM = new ShoppingCartVM()
@@ -116,6 +116,14 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 				ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
 			}
 			return View(ShoppingCartVM);
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> GetCities()
+		{
+			var citiesResponse = await _novaPoshtaClient.Address.GetCities().ConfigureAwait(false);
+			var cities = citiesResponse?.Select(c => c.Description);
+			return Json(cities);
 		}
 
 		[HttpPost]
