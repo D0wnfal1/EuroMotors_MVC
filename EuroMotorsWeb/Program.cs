@@ -3,13 +3,9 @@ using EuroMotors.DataAccess.Repository;
 using EuroMotors.DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using EuroMotors.Utility;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.Extensions.Hosting;
-using LiqPay.SDK.Dto.Enums;
-using EuroMotors.Models;
 using EuroMotors.DataAccess.DbInitializer;
-using NovaPoshtaApi;
+using Baroque.NovaPoshta.Client;
+using Baroque.NovaPoshta.Client.Services.Address;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,7 +28,9 @@ builder.Services.AddAuthentication().AddGoogle(option =>
     option.ClientSecret = googleClientSecret;
 });
 var novaPoshtaApiKey = Environment.GetEnvironmentVariable("NOVAPOSHTA_API_KEY");
-builder.Services.AddScoped<NovaPoshtaClient>(sp => new NovaPoshtaClient(novaPoshtaApiKey));
+var gateway = new DefaultNovaPoshtaGateway(novaPoshtaApiKey);
+builder.Services.AddSingleton<INovaPoshtaGateway>(gateway);
+builder.Services.AddSingleton<AddressService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddRazorPages();

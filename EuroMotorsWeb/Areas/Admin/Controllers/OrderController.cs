@@ -3,7 +3,6 @@ using EuroMotors.Models;
 using EuroMotors.Models.ViewModels;
 using EuroMotors.Utility;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 

@@ -1,11 +1,8 @@
-﻿using EuroMotors.DataAccess.Data;
-using EuroMotors.DataAccess.Repository.IRepository;
+﻿using EuroMotors.DataAccess.Repository.IRepository;
 using EuroMotors.Models;
 using EuroMotors.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore;
 
 namespace EuroMotorsWeb.Areas.Admin.Controllers
 {

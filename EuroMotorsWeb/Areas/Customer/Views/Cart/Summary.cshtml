@@ -47,10 +47,8 @@
 									<label>Місто</label>
 								</div>
 								<div class="col-9">
-									<input type="text" id="cityNameInput" class="form-control" placeholder="Введіть назву міста" autocomplete="off" />
-									<div id="cityList"></div>
-									<input hidden asp-for="OrderHeader.City" id="selectedCity" class="form-control" />
-									<span asp-validation-for="OrderHeader.City" class="text-danger"></span>
+									<input type="text" asp-for="OrderHeader.City" id="cityInput" class="form-control" placeholder="Впишіть Місто" />
+									<ul id="cityList" class="list-group mt-2"></ul>
 								</div>
 							</div>
 							<div class="row my-1">
@@ -58,15 +56,12 @@
 									<label>Відділення Нової Пошти</label>
 								</div>
 								<div class="col-9">
-									<input hidden asp-for="OrderHeader.Warehouse" id="selectedWarehouse" class="form-control" />
 									<span asp-validation-for="OrderHeader.Warehouse" class="text-danger"></span>
-									<div class="form-group" id="warehouseDropdown" style="display:none;">
-										<select class="form-control" id="warehouse" name="warehouse">
-											<option value="">-- Виберіть Відділення --</option>
-										</select>
-									</div>
+									<input type="text" asp-for="OrderHeader.Warehouse" id="warehouseInput" class="form-control" placeholder="Виберіть Відділення НП" disabled />
+									<ul id="warehouseList" class="list-group mt-2"></ul>
 								</div>
 							</div>
+
 						</div>
 						<div class="col-12 col-lg-5 offset-lg-1">
 							<h4 class="d-flex justify-content-between align-items-center mb-3">
@@ -108,71 +103,7 @@
 		</div>
 	</div>
 </form>
+
 @section Scripts {
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<script>
-		$(document).ready(function () {
-			$('#cityNameInput').on('input', function () {
-				var cityName = $(this).val();
-				if (cityName.length >= 3) {
-					$.ajax({
-						url: '@Url.Action("SearchCities", "Cart")',
-						type: 'GET',
-						data: { cityName: cityName },
-						success: function (response) {
-							var cityList = $('#cityList');
-							cityList.empty();
-							$.each(response, function (index, city) {
-								cityList.append('<div class="city-option">' + city + '</div>');
-							});
-							cityList.show(); // Показываем список городов
-						},
-					});
-				} else {
-					$('#cityList').empty().hide(); // Очищаем и скрываем список городов при недостаточной длине ввода
-				}
-			});
-
-			// Обработка выбора города из списка
-			$(document).on('click', '.city-option', function () {
-				var selectedCity = $(this).text();
-				$('#cityNameInput').val(selectedCity);
-				$('#selectedCity').val(selectedCity);
-				$('#cityList').empty().hide(); // Очищаем и скрываем список городов при выборе города
-
-				// Загрузка отделений по выбранному городу
-				$.ajax({
-					url: '@Url.Action("GetWarehousesByCityName", "Cart")',
-					type: 'GET',
-					data: { cityName: selectedCity },
-					success: function (response) {
-						var warehouseDropdown = $('#warehouse');
-						warehouseDropdown.empty();
-						$.each(response, function (index, warehouse) {
-							warehouseDropdown.append('<option value="' + warehouse + '">' + warehouse + '</option>');
-						});
-						$('#warehouseDropdown').show();
-					},
-				});
-			});
-		});
-	</script>
-
-	<style>
-		.city-option {
-			padding: 5px 10px;
-			cursor: pointer;
-			transition: background-color 0.3s;
-		}
-
-			.city-option:hover {
-				background-color: #f2f2f2;
-			}
-	</style>
+	<script src="~/js/novaposhta.js"></script>
 }
-
-
-
-
-
-

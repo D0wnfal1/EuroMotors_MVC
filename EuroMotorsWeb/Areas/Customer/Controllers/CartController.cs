@@ -1,4 +1,6 @@
-﻿using EuroMotors.DataAccess.Repository.IRepository;
+﻿using Baroque.NovaPoshta.Client.Domain.Address;
+using Baroque.NovaPoshta.Client.Services.Address;
+using EuroMotors.DataAccess.Repository.IRepository;
 using EuroMotors.Models;
 using EuroMotors.Models.ViewModels;
 using EuroMotors.Utility;
@@ -6,7 +8,6 @@ using LiqPay.SDK.Dto;
 using LiqPay.SDK.Dto.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using NovaPoshtaApi;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -17,16 +18,16 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 	public class CartController : Controller
 	{
 		private readonly IUnitOfWork _unitOfWork;
-        private readonly NovaPoshtaClient _novaPoshtaClient;
+        private readonly AddressService _addressService;
 
         [BindProperty]
 		public ShoppingCartVM ShoppingCartVM { get; set; }
 
-		public CartController(IUnitOfWork unitOfWork, NovaPoshtaClient novaPoshtaClient)
+		public CartController(IUnitOfWork unitOfWork, AddressService addressService)
 		{
 			_unitOfWork = unitOfWork;
-            _novaPoshtaClient = novaPoshtaClient;
-        }
+			_addressService = addressService;
+		}
 
 		private string GetUserId()
 		{
@@ -92,19 +93,10 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 				}
 			}
 
-			var cities = Enumerable.Empty<string>();
-
-			if (!string.IsNullOrEmpty(cityName))
-			{
-				var citiesResponse = await _novaPoshtaClient.Address.GetCities(cityName);
-				cities = citiesResponse?.Select(c => c.Description);
-			}
-
 			ShoppingCartVM = new ShoppingCartVM()
 			{
 				ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId || u.GuestId == userId, includeProperties: "Product"),
 				OrderHeader = new OrderHeader(),
-				Cities = cities
 			};
 
 			if (claimsIdentity.IsAuthenticated)
@@ -120,14 +112,6 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 				ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
 			}
 			return View(ShoppingCartVM);
-		}
-
-		[HttpGet]
-		public IActionResult SearchCities(string cityName)
-		{
-			var citiesResponse = _novaPoshtaClient.Address.GetCities().GetAwaiter().GetResult();
-			var cities = citiesResponse?.Select(c => c.Description).Where(c => c.ToLower().Contains(cityName.ToLower())).ToList();
-			return Json(cities);
 		}
 
 		[HttpPost]
@@ -226,7 +210,6 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
             var paymentRequest = new LiqPayRequest
             {
                 PublicKey = Environment.GetEnvironmentVariable("LIQPAY_PUBLIC_KEY"),
-				IsSandbox = true,
                 Amount = ShoppingCartVM.OrderHeader.OrderTotal,
                 Currency = "UAH",
                 OrderId = ShoppingCartVM.OrderHeader.Id.ToString(),
@@ -240,7 +223,7 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
                     Unit = "шт.",
                     Name = cart.Product.Title
                 }).ToList(),
-                ResultUrl = productionDomain + $"Customer/Home/Redirect",
+                ResultUrl = developmentDomain + $"Customer/Home/Redirect",
             };
             var json_string = JsonConvert.SerializeObject(paymentRequest);
             var data_hash = Convert.ToBase64String(Encoding.UTF8.GetBytes(json_string));
@@ -266,13 +249,22 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
 		}
 
 		[HttpGet]
-        public async Task<IActionResult> GetWarehousesByCityName(string cityName)
-        {
-            var warehousesResponse = await _novaPoshtaClient.Address.GetWarehousesByCityName(cityName);
-            var warehouses = warehousesResponse?.Select(w => w.Description);
-            return Json(warehouses);
-        }
-        public IActionResult Plus(int cardId)
+		public IActionResult SearchCities(string query)
+		{
+			var citiesResponse = _addressService.GetCities(new CitiesGetRequest { FindByString = query });
+			var cities = citiesResponse.Data.Select(city => city.Description).ToList();
+
+			return Json(cities);
+		}
+		[HttpGet]
+		public async Task<IActionResult> GetWarehouses(string city, string query)
+		{
+			var warehousesResponse = _addressService.GetWarehouses(city);
+			var warehouses = warehousesResponse.Data.Select(warehouse => warehouse.Description).Where(warehouse => warehouse.Contains(query, StringComparison.OrdinalIgnoreCase)).ToList();
+			return Json(warehouses);
+		}
+
+		public IActionResult Plus(int cardId)
 		{
 			var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cardId);
 			cartFromDb.Count += 1;

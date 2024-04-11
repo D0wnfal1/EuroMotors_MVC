@@ -1,5 +1,4 @@
-﻿using EuroMotors.DataAccess.Data;
-using EuroMotors.DataAccess.Repository.IRepository;
+﻿using EuroMotors.DataAccess.Repository.IRepository;
 using EuroMotors.Models;
 using EuroMotors.Utility;
 using Microsoft.AspNetCore.Authorization;

@@ -7,9 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EuroMotorsWeb.Areas.Customer.Controllers
 {
@@ -110,7 +108,7 @@ namespace EuroMotorsWeb.Areas.Customer.Controllers
             string decodedString = Encoding.UTF8.GetString(request_data);
             var request_data_dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(decodedString);
 
-            if (request_data_dictionary["status"] == "sandbox" || request_data_dictionary["status"] == "success")
+            if (request_data_dictionary["status"] == "success")
             {
                 OrderHeader orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == Convert.ToInt32(request_data_dictionary["order_id"]), includeProperties: "ApplicationUser");
                 _unitOfWork.OrderHeader.UpdateStatus(Convert.ToInt32(request_data_dictionary["order_id"]), SD.StatusApproved, SD.PaymentStatusApproved);
