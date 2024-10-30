@@ -1,53 +1,53 @@
 ### EuroMotors
 
-EuroMotors - це веб-додаток магазину автозапчастин, розроблений для зручності клієнтів та адміністраторів. Додаток надає можливість перегляду, додавання, редагування та видалення товарів, категорій та замовлень.
+EuroMotors is a web application for an auto parts store designed for the convenience of customers and administrators. The application allows for viewing, adding, editing, and deleting products, categories, and orders.
 
-### Для клієнтів:
+### For Customers:
 
-1. **Перегляд товарів**:
-   - Клієнти можуть переглядати доступні товари за категоріями, моделями автомобілів тощо.
-   - Кожен товар має сторінку з докладним описом, зображеннями та характеристиками.
+1. **Viewing Products**:
+   - Customers can browse available products by categories, car models, etc.
+   - Each product has a page with a detailed description, images, and specifications.
 
-2. **Додавання товарів в корзину**:
-   - Клієнти можуть додавати товари до своєї корзини для подальшого оформлення замовлення.
+2. **Adding Products to Cart**:
+   - Customers can add products to their cart for later checkout.
 
-3. **Оформлення замовлення**:
-   - Після додавання товарів в корзину клієнти можуть переглянути її та оформити замовлення.
-   - Вони можуть вказати адресу доставки та інші деталі замовлення.
+3. **Checkout**:
+   - After adding products to the cart, customers can review it and proceed to checkout.
+   - They can specify the delivery address and other order details.
 
-4. **Відстеження статусу замовлення**:
-   - Після оформлення замовлення клієнти можуть відстежувати його статус, наприклад, "В обробці", "Відправлено" тощо.
+4. **Order Status Tracking**:
+   - After placing an order, customers can track its status, such as "Processing," "Shipped," etc.
 
-### Для адміністраторів:
+### For Administrators:
 
-1. **Управління товарами**:
-   - Адміністратори мають можливість додавати нові товари, редагувати та видаляти існуючі.
-   - Вони можуть встановлювати ціни, додавати зображення та інші деталі товару.
+1. **Product Management**:
+   - Administrators have the ability to add new products, edit, and delete existing ones.
+   - They can set prices, add images, and other product details.
 
-2. **Управління категоріями**:
-   - Адміністратори можуть створювати нові категорії товарів, редагувати та видаляти існуючі.
+2. **Category Management**:
+   - Administrators can create new product categories, edit, and delete existing ones.
 
-3. **Управління замовленнями**:
-   - Адміністратори мають доступ до списку замовлень та можуть переглядати їх деталі.
-   - Вони можуть оновлювати статуси замовлень, наприклад, позначати їх як "В обробці", "Відправлено" тощо.
+3. **Order Management**:
+   - Administrators have access to the list of orders and can view their details.
+   - They can update order statuses, marking them as "Processing," "Shipped," etc.
 
-4. **Авторизація та автентифікація**:
-   - Відокремлені облікові записи адміністраторів дозволяють керувати доступом до адміністративних функцій лише авторизованим користувачам.
+4. **Authorization and Authentication**:
+   - Separate administrator accounts allow for access to administrative functions only by authorized users.
 
-### Використані технології
+### Technologies Used
 
-- ASP.NET Core MVC - фреймворк для побудови веб-додатків на мові програмування C#.
-- Entity Framework Core - ORM (об'єктно-реляційне відображення) для роботи з базою даних Microsoft SQL Server.
-- Identity Framework - для управління аутентифікацією, авторизацією та ролями користувачів.
-- Bootstrap - для розробки інтерфейсу та респонсивного дизайну.
-- Razor Pages та контролери MVC для організації логіки та представлень.
-- HTML, CSS та JavaScript для клієнтського інтерфейсу.
-- Nova Poshta API - для отримання інформації про відправлення та доставку замовлень.
-- LiqPayApi - для створення та обробки платежу.
+- **ASP.NET Core MVC** - a framework for building web applications in the C# programming language.
+- **Entity Framework Core** - an ORM (Object-Relational Mapping) for working with the Microsoft SQL Server database.
+- **Identity Framework** - for managing authentication, authorization, and user roles.
+- **Bootstrap** - for interface development and responsive design.
+- **Razor Pages and MVC controllers** for organizing logic and views.
+- **HTML, CSS, and JavaScript** for the client interface.
+- **Nova Poshta API** - for obtaining information about shipments and order deliveries.
+- **LiqPayApi** - for creating and processing payments.
 
-### Використані патерни
+### Design Patterns Used
 
-- MVC (Model-View-Controller): для розділення програми на три основні компоненти, що дозволяє відокремити логіку додатку від представлення та взаємодії з даними.
-- Repository Pattern: для розділення логіки доступу до даних від логіки бізнес-логіки та прослойки між ними.
-- Unit of Work Pattern: для керування транзакціями та кількома репозиторіями.
-- Dependency Injection: для впровадження принципу інверсії керування та полегшення тестування та обслуговування коду.
+- **MVC (Model-View-Controller)**: for separating the application into three main components, allowing the separation of application logic from presentation and data interaction.
+- **Repository Pattern**: for separating data access logic from business logic and the layer between them.
+- **Unit of Work Pattern**: for managing transactions and multiple repositories.
+- **Dependency Injection**: for implementing the principle of inversion of control and facilitating code testing and maintenance.
